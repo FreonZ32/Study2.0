@@ -4,10 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FirstLesson"
+        xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <TabControl x:Name="products">
+    <Grid Background="Lavender">
+        <!--<TabControl x:Name="products">
             <TabItem x:Name="smartphonesTab">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
@@ -36,6 +37,74 @@
                     </StackPanel>
                 </TabItem.Content>
             </TabItem>
-        </TabControl>
+        </TabControl>-->
+
+        <!--<Menu Height="25" VerticalAlignment="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="New Progect"></MenuItem>
+                <MenuItem Header="Open Progect">
+                    <MenuItem Header="WinForms"></MenuItem>
+                    <MenuItem Header="WPF"></MenuItem>
+                </MenuItem>
+                <Separator></Separator>
+                <MenuItem Header="Exit"></MenuItem>
+            </MenuItem>
+            <MenuItem Header=" 🖊Edit">
+            </MenuItem>
+            <MenuItem Header="View"></MenuItem>
+        </Menu>
+        <ListBox x:Name="list" Height="145">
+            <ListBoxItem Margin="3"> MS SQL</ListBoxItem> 
+            <ListBoxItem Margin="3"> MySQL</ListBoxItem>
+            <ListBoxItem Margin="3">Oracal</ListBoxItem>
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Копировать"></MenuItem>
+                    <MenuItem Header="Вставить"></MenuItem>
+                    <MenuItem Header="Вырезать"></MenuItem>
+                    <MenuItem Header="Удалить"></MenuItem>
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox>-->
+
+        <!--<TreeView>
+            <TextBox>"Элемент Tree View"</TextBox>
+            <TreeViewItem Header="База данных">
+                <TreeViewItem Header="MS SQL Server"></TreeViewItem>
+                <TreeViewItem Header="MySQL Server"></TreeViewItem>
+                <TreeViewItem Header="MongoDB"></TreeViewItem>
+                <TreeViewItem Header="Postgres"></TreeViewItem>
+            </TreeViewItem>
+            <TreeViewItem Header="Языки программирования">
+                <TreeViewItem Header="C-Языки" Expanded="TreeViewItem_Expanded">
+                    <TreeViewItem Header="C#" Selected="TreeViewItem_Selected"></TreeViewItem>
+                    <TreeViewItem Header="C/C++" Selected="TreeViewItem_Selected"></TreeViewItem>
+                    <TreeViewItem Header="Java" Selected="TreeViewItem_Selected"></TreeViewItem>
+                </TreeViewItem>
+                <TreeViewItem Header="Basic">
+                    <TreeViewItem Header="Visual Dasic"></TreeViewItem>
+                    <TreeViewItem Header="VB.Net"></TreeViewItem>
+                    <TreeViewItem Header="PureBasic"></TreeViewItem>
+                </TreeViewItem>
+            </TreeViewItem>
+        </TreeView>-->
+
+        <DataGrid x:Name="phoneGrid" AutoGenerateColumns="True" RowBackground="LightGray" AlternatingRowBackground="White">
+            <!--ItemsSource="{DynamicResource ResourceKey=phones}"-->
+            <!--<DataGrid.Resources>
+                <col:ArrayList x:Key="phones">-->
+            <DataGrid.Items>
+                <local:Phone Title="iPhone 14" Company="Apple" Price="140000"/>
+                <local:Phone Title="Xiaomi 12 Lite" Company="Xiaomi" Price="39000"/>
+                <local:Phone Title="Nexus 5X" Company="Google" Price="29900"/>
+            </DataGrid.Items>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Модель" Binding="{Binding Path=Title}" Width="90"/>
+                <DataGridHyperlinkColumn Header="Компания" Binding="{Binding Path=Company}" Width="80"/>
+                <DataGridTextColumn Header="Цена" Binding="{Binding Path=Price}" Width="50"/>
+            </DataGrid.Columns>
+            <!--</col:ArrayList> 
+            </DataGrid.Resources>-->
+        </DataGrid>
     </Grid>
 </Window>

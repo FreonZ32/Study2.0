@@ -1,0 +1,52 @@
+﻿<Window x:Class="KeyboardTrainer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KeyboardTrainer"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="0.5*"></RowDefinition>
+            <RowDefinition Height="0.5*"></RowDefinition>
+            <RowDefinition Height="5*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <Label FontSize="16">Speed:</Label>
+                <TextBlock x:Name="SpeedTextBlock" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
+                <Label FontSize="16">chars/min</Label>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+                <Label FontSize="16">Fails:</Label>
+                <TextBlock x:Name="FailsTextBlock" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
+            </StackPanel>
+            <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal">
+                <Label FontSize="16">Difficulty:</Label>
+                <TextBlock x:Name="DifficultyTextBlock" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
+                <Slider x:Name="DifficultySlider" VerticalAlignment="Center" ValueChanged="Slider_ValueChanged" Width="90" HorizontalAlignment="Center" Minimum="1"/>
+            </StackPanel>
+            <StackPanel Grid.Column="3" Grid.Row="0" Orientation="Horizontal">
+                <CheckBox x:Name="CaseSensetiveCheckBox" VerticalAlignment="Center" Click="CaseSensetiveCheckBox_Click" ></CheckBox>
+                <Label FontSize="16">Case Sensetive</Label>
+            </StackPanel>
+            <Button x:Name="StartBtn" Grid.Column="2" Grid.Row="1" Click="StartBtn_Click">Start</Button>
+            <Button x:Name="StopBtn" Grid.Column="3" Grid.Row="1" Click="StopBtn_Click">Stop</Button>
+            <TextBlock x:Name="TimerDbg" FontSize="16" FontWeight="Bold" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+        </Grid>
+        <TextBlock x:Name="TextToInputTextBlock" Grid.Row="1" Background="#FF9DC2EE" FontSize="18" FontWeight="Bold"></TextBlock>
+        <TextBox x:Name="InputTextBox" Grid.Row="2" Background="#FF9DC2EE" FontSize="18" FontWeight="Bold" KeyUp="InputTextBox_KeyUp" KeyDown="InputTextBox_KeyDown"></TextBox>
+    </Grid>
+</Window>

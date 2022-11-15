@@ -25,12 +25,12 @@ namespace KeyboardTrainer
     public partial class MainWindow : Window
     {
         int fails = 0;
-        int speed = 0;
+        double speed = 0;
         int diffculty = 1;
         String textToInput = "";
         String inputText = "";
-        private DispatcherTimer timer = null;
-        int timeStart;
+        DispatcherTimer timer;
+        DateTime timeStart;
         bool caseSensetive = false;
 
         public MainWindow()
@@ -56,7 +56,9 @@ namespace KeyboardTrainer
             StartBtn.IsEnabled = false;
             DifficultySlider.IsEnabled = false;
             InputTextBox.IsEnabled = true;
-            timeStart = DateTime.Now.Second;
+            InputTextBox.Text = "";
+            inputText = "";
+            timeStart = DateTime.Now;
             timer.Start();
             TextGenerator(diffculty);
             TextToInputTextBlock.Text = textToInput;
@@ -65,15 +67,17 @@ namespace KeyboardTrainer
         }
         private void timerTick(object sender, EventArgs e)
         {
-            TimerDbg.Text = (DateTime.Now.Second - timeStart).ToString();
+            if(inputText.Length!=0)
+            speed = ((inputText.Length/(Convert.ToDouble((DateTime.Now - timeStart).TotalSeconds))*60));
+            SpeedTextBlock.Text = speed.ToString("#.##");
         }
 
         private void StopBtn_Click(object sender, RoutedEventArgs e)
         {
             StartBtn.IsEnabled = true;
             DifficultySlider.IsEnabled = true;
-            InputTextBox.IsEnabled = false;
-            timer.Stop();
+            if(InputTextBox.IsEnabled == true) InputTextBox.IsEnabled = false;
+            if (timer.IsEnabled!=false)timer.Stop();
         }
 
         private void TextGenerator(int diffculty)
@@ -124,17 +128,11 @@ namespace KeyboardTrainer
         private void InputTextBox_KeyUp(object sender, KeyEventArgs e)
         {
             inputText = InputTextBox.Text;
-            if (inputText[inputText.Length-1]!=textToInput[inputText.Length-1])fails++; ///ОШИБКА!!!
-            //for (int i = 0; i < inputText.Length; i++)
-            //{
-            //    if (inputText[i] != textToInput[i]) fails++;
-            //}
-            FailsTextBlock.Text = fails.ToString(); //Слишком медленно!!!!
-        }
-
-        private void InputTextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (inputText.Length + 1 > textToInput.Length) { StopBtn_Click(sender, e); return; }
+            if (inputText.Length >= textToInput.Length) { StopBtn_Click(sender, e); return; }
+            if (inputText.Length != 0)
+                if (inputText[inputText.Length - 1] != textToInput[inputText.Length - 1]) fails++;
+            if (inputText.Length + 1 >= textToInput.Length) { StopBtn_Click(sender, e); return; }
+            FailsTextBlock.Text = fails.ToString();
         }
     }
 }

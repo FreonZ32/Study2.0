@@ -47,6 +47,6 @@
             <TextBlock x:Name="TimerDbg" FontSize="16" FontWeight="Bold" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
         </Grid>
         <TextBlock x:Name="TextToInputTextBlock" Grid.Row="1" Background="#FF9DC2EE" FontSize="18" FontWeight="Bold"></TextBlock>
-        <TextBox x:Name="InputTextBox" Grid.Row="2" Background="#FF9DC2EE" FontSize="18" FontWeight="Bold" KeyUp="InputTextBox_KeyUp" KeyDown="InputTextBox_KeyDown"></TextBox>
+        <TextBox x:Name="InputTextBox" Grid.Row="2" Background="#FF9DC2EE" FontSize="18" FontWeight="Bold" KeyUp="InputTextBox_KeyUp" IsEnabled="False"></TextBox>
     </Grid>
 </Window>

@@ -38,12 +38,16 @@ namespace KeyboardTrainer
         List<Button> KBFieldButtons;
 
         static List<string> KBButtonsContentLowCase = new List<string>
-        {"`","1","2","3","4","5","6","7","8","9","0","-","=","Backspace","Tab","q","w","e","r","t", "y", "u", "i", "o","p","[","]","\\",
-            "Caps Lock","a","s","d","f","g","h","j","k","l",";","'","Enter","Shift","z","x","c","v","b","n","m",",",".","/", "Shift",
+        {"`","1","2","3","4","5","6","7","8","9","0","-","=","Backspace",
+            "Tab","q","w","e","r","t", "y", "u", "i", "o","p","[","]","\\",
+            "Caps Lock","a","s","d","f","g","h","j","k","l",";","'","Enter",
+            "Shift","z","x","c","v","b","n","m",",",".","/", "Shift",
             "Ctrl", "Win", "Alt","Space","Alt","Win","Ctrl" };
         static List<string> KBButtonsContentUpperCase = new List<string>
-        {"~","!","@","#","$","%","^","&","*","(",")","_","+","Backspace","Tab","Q","W","E","R","T", "Y", "U", "I", "O","P","{","}","|",
-            "Caps Lock","A","S","D","F","G","H","J","K","L",":","\"","Enter","Shift","Z","X","C","V","B","N","M","<",">","?", "Shift",
+        {"~","!","@","#","$","%","^","&","*","(",")","_","+","Backspace",
+            "Tab","Q","W","E","R","T", "Y", "U", "I", "O","P","{","}","|",
+            "Caps Lock","A","S","D","F","G","H","J","K","L",":","\"","Enter",
+            "Shift","Z","X","C","V","B","N","M","<",">","?", "Shift",
             "Ctrl", "Win", "Alt","Space","Alt","Win","Ctrl" };
         static List<int> KBButtonsKeyCode = new List<int>
         {146,35,36,37,38,39,40,41,42,43,34,143,141,2,
@@ -52,8 +56,10 @@ namespace KeyboardTrainer
         116,69,67,46,65,45,57,56,142,144,145,117,
         118,70,156,18,156,70,119};
         static List<string> KBButtonsColor = new List<string>// Серый:#FFA3A3A3 Розовый:#FFED9B9B Желтый:#FFEBE871 Зеленый:#FF6BF378 Синий:#FF6BC7F3 Фиолетовый:#FFB78EE9 
-        {"#FFED9B9B","#FFED9B9B","#FFED9B9B","#FFEBE871","#FF6BF378","#FF6BC7F3","#FF6BC7F3","#FFB78EE9","#FFB78EE9","#FFA3A3A3","#FFEBE871","#FF6BF378","#FF6BF378","#FFA3A3A3","#FFA3A3A3","#FFA3A3A3","#FFEBE871","#FF6BF378","#FF6BC7F3","#FF6BC7F3", "#FFB78EE9", "#FFB78EE9", "#FFA3A3A3", "#FFEBE871","#FF6BF378","#FF6BF378","#FF6BF378","#FF6BF378",
-            "#FFA3A3A3","#FFA3A3A3","#FFEBE871","#FF6BF378","#FF6BC7F3","#FF6BC7F3","#FFB78EE9","#FFB78EE9","#FFA3A3A3","#FFEBE871","#FF6BF378","#FF6BF378","#FFA3A3A3","#FFA3A3A3","#FFA3A3A3","#FFEBE871","#FF6BF378","#FF6BC7F3","#FF6BC7F3","#FFB78EE9","#FFB78EE9","#FFA3A3A3","#FFEBE871","#FF6BF378", "#FFA3A3A3",
+        {"#FFED9B9B","#FFED9B9B","#FFED9B9B","#FFEBE871","#FF6BF378","#FF6BC7F3","#FF6BC7F3","#FFB78EE9","#FFB78EE9","#FFED9B9B","#FFEBE871","#FF6BF378","#FF6BF378","#FFA3A3A3",
+            "#FFA3A3A3","#FFED9B9B","#FFEBE871","#FF6BF378","#FF6BC7F3","#FF6BC7F3", "#FFB78EE9", "#FFB78EE9", "#FFED9B9B", "#FFEBE871","#FF6BF378","#FF6BF378","#FF6BF378","#FF6BF378",
+            "#FFA3A3A3","#FFED9B9B","#FFEBE871","#FF6BF378","#FF6BC7F3","#FF6BC7F3","#FFB78EE9","#FFB78EE9","#FFED9B9B","#FFEBE871","#FF6BF378","#FF6BF378","#FFA3A3A3",
+            "#FFA3A3A3","#FFED9B9B","#FFEBE871","#FF6BF378","#FF6BC7F3","#FF6BC7F3","#FFB78EE9","#FFB78EE9","#FFED9B9B","#FFEBE871","#FF6BF378", "#FFA3A3A3",
             "#FFA3A3A3", "#FFA3A3A3", "#FFA3A3A3","#FFEBE871","#FFA3A3A3","#FFA3A3A3","#FFA3A3A3" };
         int keyDown;
 

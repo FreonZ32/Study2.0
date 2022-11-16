@@ -36,7 +36,6 @@ namespace KeyboardTrainer
         bool UpperCaseOn = false;
         List<ColumnDefinition> KBFGridFirstColumns;
         List<Button> KBFieldButtons;
-
         static List<string> KBButtonsContentLowCase = new List<string>
         {"`","1","2","3","4","5","6","7","8","9","0","-","=","Backspace",
             "Tab","q","w","e","r","t", "y", "u", "i", "o","p","[","]","\\",
@@ -72,8 +71,7 @@ namespace KeyboardTrainer
             timer = new DispatcherTimer();
             timer.Tick += new EventHandler(timerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
-
-
+            //Действия с xaml-------------------------------------------------------
             RowDefinition rowDefinition1 = new RowDefinition();
             RowDefinition rowDefinition2 = new RowDefinition();
             RowDefinition rowDefinition3 = new RowDefinition();
@@ -171,13 +169,17 @@ namespace KeyboardTrainer
             else UpperCaseOn = false;
             ChangeCase();
         }
-
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             diffculty = Convert.ToInt32(e.NewValue);
             DifficultyTextBlock.Text = diffculty.ToString();
         }
-
+        private void timerTick(object sender, EventArgs e)
+        {
+            if (inputText.Length != 0)
+                speed = ((inputText.Length / (Convert.ToDouble((DateTime.Now - timeStart).TotalSeconds)) * 60));
+            SpeedTextBlock.Text = speed.ToString("#.##");
+        }
         private void StartBtn_Click(object sender, RoutedEventArgs e)
         {
             fails = 0;
@@ -192,15 +194,7 @@ namespace KeyboardTrainer
             TextGenerator(diffculty);
             TextToInputTextBlock.Text = textToInput;
             this.InputTextBox.Focus();
-
         }
-        private void timerTick(object sender, EventArgs e)
-        {
-            if(inputText.Length!=0)
-            speed = ((inputText.Length/(Convert.ToDouble((DateTime.Now - timeStart).TotalSeconds))*60));
-            SpeedTextBlock.Text = speed.ToString("#.##");
-        }
-
         private void StopBtn_Click(object sender, RoutedEventArgs e)
         {
             StartBtn.IsEnabled = true;
@@ -209,44 +203,6 @@ namespace KeyboardTrainer
             if (timer.IsEnabled!=false)timer.Stop();
             CaseSensetiveCheckBox.IsEnabled = true;
         }
-
-        private void TextGenerator(int diffculty)
-        {
-            textToInput = "";
-            Random random = new Random();
-            for(int i = 0; i < diffculty*20; i++)
-            {
-                if(random.Next(20)>1)//рeгулировка частоты появления символов !/} и т д
-                {
-                    if (random.Next(10) >= 1)   //регулировка появления пробелов
-                    {
-                        if (caseSensetive == true)
-                        {
-                            if (random.Next(6) >= 3)   //Регулировка частоты Верхнего и Нижнего регистра.
-                                textToInput += (char)random.Next(65, 90);
-                            else
-                                textToInput += (char)random.Next(97, 122);
-                        }
-                        else textToInput += (char)random.Next(97, 122);
-                    }
-                    else textToInput += " ";
-                }
-                else
-                {
-                    switch(random.Next(5))
-                    {
-                        case 0: textToInput += (char)random.Next(31, 47);break;
-                        case 1: textToInput += (char)random.Next(48, 57);break;
-                        case 2: textToInput += (char)random.Next(58, 64);break;
-                        case 3: textToInput += (char)random.Next(91, 96);break;
-                        case 4: textToInput += (char)random.Next(123, 126);break;
-                            default:MessageBox.Show("!!!!"); break;
-                    }
-                }
-
-            }
-        }
-
         private void CaseSensetiveCheckBox_Click(object sender, RoutedEventArgs e)
         {
             if (CaseSensetiveCheckBox.IsChecked == true)
@@ -254,7 +210,6 @@ namespace KeyboardTrainer
             else
             {caseSensetive = false;}
         }
-
         private void InputTextBox_KeyUp(object sender, KeyEventArgs e)
         {
             inputText = InputTextBox.Text;
@@ -264,18 +219,6 @@ namespace KeyboardTrainer
             if (inputText.Length + 1 >= textToInput.Length) { StopBtn_Click(sender, e); return; }
             FailsTextBlock.Text = fails.ToString();
         }
-
-        private void ChangeCase()
-        {
-            if (UpperCaseOn == false)
-            for (int i = 0; i < KBBCount; i++)
-            {KBFieldButtons[i].Content = KBButtonsContentLowCase[i];}
-            else
-                for (int i = 0; i < KBBCount; i++)
-                { KBFieldButtons[i].Content = KBButtonsContentUpperCase[i]; }
-            UpperCaseOn = !UpperCaseOn;
-        }
-
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if ((e.Key == Key.LeftShift || e.Key == Key.CapsLock) && KBFieldButtons[0].Content == "`") { UpperCaseOn = true; ChangeCase(); }
@@ -297,6 +240,52 @@ namespace KeyboardTrainer
             for (int i = 0; i < KBBCount; i++)  //Устраняет залипание Shift+AnyKey,когда 2 нажатых клавишы не дают поменять цвет обратно.
             {KBFieldButtons[i].Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(KBButtonsColor[i]));}
         }
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        private void ChangeCase()
+        {
+            if (UpperCaseOn == false)
+                for (int i = 0; i < KBBCount; i++)
+                { KBFieldButtons[i].Content = KBButtonsContentLowCase[i]; }
+            else
+                for (int i = 0; i < KBBCount; i++)
+                { KBFieldButtons[i].Content = KBButtonsContentUpperCase[i]; }
+            UpperCaseOn = !UpperCaseOn;
+        }
+        private void TextGenerator(int diffculty)
+        {
+            textToInput = "";
+            Random random = new Random();
+            for (int i = 0; i < diffculty * 20; i++)
+            {
+                if (random.Next(20) > 1)//рeгулировка частоты появления символов !/} и т д
+                {
+                    if (random.Next(10) >= 1)   //регулировка появления пробелов
+                    {
+                        if (caseSensetive == true)
+                        {
+                            if (random.Next(6) >= 3)   //Регулировка частоты Верхнего и Нижнего регистра.
+                                textToInput += (char)random.Next(65, 90);
+                            else
+                                textToInput += (char)random.Next(97, 122);
+                        }
+                        else textToInput += (char)random.Next(97, 122);
+                    }
+                    else textToInput += " ";
+                }
+                else
+                {
+                    switch (random.Next(5))
+                    {
+                        case 0: textToInput += (char)random.Next(31, 47); break;
+                        case 1: textToInput += (char)random.Next(48, 57); break;
+                        case 2: textToInput += (char)random.Next(58, 64); break;
+                        case 3: textToInput += (char)random.Next(91, 96); break;
+                        case 4: textToInput += (char)random.Next(123, 126); break;
+                        default: MessageBox.Show("!!!!"); break;
+                    }
+                }
 
+            }
+        }
     }
 }

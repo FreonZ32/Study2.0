@@ -284,7 +284,6 @@ namespace KeyboardTrainer
                         default: MessageBox.Show("!!!!"); break;
                     }
                 }
-
             }
         }
     }

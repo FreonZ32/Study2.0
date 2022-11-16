@@ -160,7 +160,6 @@ namespace KeyboardTrainer
                 KBFieldButtons[i].FontSize = 20;
                 KBFieldButtons[i].Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(KBButtonsColor[i]));
             }
-            MessageBox.Show(Keyboard.GetKeyStates(Key.CapsLock).ToString());
             if (Keyboard.GetKeyStates(Key.CapsLock).ToString() == "Toggled")
                 UpperCaseOn = true;
             else UpperCaseOn = false;

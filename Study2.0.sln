@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProgressBarSlider", "Progre
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calendar2", "Calendar2\Calendar2.csproj", "{9477DCA4-7760-44E1-AF53-E0CADFDC76C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProg", "TestProg\TestProg.csproj", "{DBA73019-BC9C-40D7-85BC-00A2279577B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventsProg", "EventsProg\EventsProg.csproj", "{4BA60306-6D42-4D4E-918C-43D8AA6707DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{9477DCA4-7760-44E1-AF53-E0CADFDC76C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9477DCA4-7760-44E1-AF53-E0CADFDC76C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9477DCA4-7760-44E1-AF53-E0CADFDC76C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBA73019-BC9C-40D7-85BC-00A2279577B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBA73019-BC9C-40D7-85BC-00A2279577B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBA73019-BC9C-40D7-85BC-00A2279577B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBA73019-BC9C-40D7-85BC-00A2279577B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BA60306-6D42-4D4E-918C-43D8AA6707DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BA60306-6D42-4D4E-918C-43D8AA6707DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BA60306-6D42-4D4E-918C-43D8AA6707DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BA60306-6D42-4D4E-918C-43D8AA6707DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

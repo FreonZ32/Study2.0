@@ -1,0 +1,25 @@
+﻿<Window x:Class="EventsProg.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EventsProg"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" WindowStyle ="None" >
+    <Grid>
+        <!--<Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Button Grid.Column="0" x:Name="Button1" Content="Click" Click="Button1_Click"></Button>
+        <TextBlock Grid.Column="1" x:Name="TB1"></TextBlock>
+        <TextBlock Grid.Column="2" x:Name="TB2"></TextBlock>-->
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Button Grid.Row="0" x:Name="Btn1" Click="Btn1_Click">Click</Button>
+        <ProgressBar Grid.Row="1" Width="600" Height="40"></ProgressBar>
+    </Grid>
+</Window>

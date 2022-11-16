@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Calendar2
+namespace EventsProg
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -24,11 +25,10 @@ namespace Calendar2
         {
             InitializeComponent();
         }
-        //private void Calendar1_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //    DateTime? selectedDate = Calendar1.SelectedDate;
-        //    MessageBox.Show((selectedDate).Value.Date.ToShortDateString());
 
-        //}
+        private void Btn1_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }

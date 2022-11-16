@@ -10,25 +10,23 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Calendar2
+namespace EventsProg
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class Window1 : Window
     {
-        public MainWindow()
+        public Window1()
         {
             InitializeComponent();
+            for (int i = 600; i < 1200; i++)
+            {
+                this.Width = i;
+            }
+            Close();
         }
-        //private void Calendar1_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //    DateTime? selectedDate = Calendar1.SelectedDate;
-        //    MessageBox.Show((selectedDate).Value.Date.ToShortDateString());
-
-        //}
     }
 }

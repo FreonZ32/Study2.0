@@ -6,9 +6,13 @@
         xmlns:local="clr-namespace:Calendar2"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Calendar x:Name="Calendar1" FirstDayOfWeek="Monday" SelectedDatesChanged="Calendar1_SelectedDatesChanged"
-                  SelectionMode="MultipleRange" xmlns:sys="cls-namespace:System;assembly = micorlib">
+    <Grid AutomationProperties.Name="">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="9*"/>
+            <ColumnDefinition Width="91*"/>
+        </Grid.ColumnDefinitions>
+        <!--<Calendar x:Name="Calendar1" FirstDayOfWeek="Monday" SelectedDatesChanged="Calendar1_SelectedDatesChanged"
+                  SelectionMode="MultipleRange" xmlns:sys="cls-namespace:System; assembly = mscorlib">
             <Calendar.BlackoutDates>
                 <CalendarDateRange Start="10/5/2013" End="10/8/2013"/>
             </Calendar.BlackoutDates>
@@ -17,6 +21,9 @@
                 <sys:DateTime>10/15/2013</sys:DateTime>
                 <sys:DateTime>10/30/2013</sys:DateTime>
             </Calendar.SelectedDates>
-        </Calendar>
+        </Calendar>-->
+        
+        <!--<DatePicker x:Name="DB1" IsDropDownOpen="True" SelectedDateFormat="Short"></DatePicker>-->
+        
     </Grid>
 </Window>

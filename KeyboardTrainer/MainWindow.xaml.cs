@@ -50,7 +50,7 @@ namespace KeyboardTrainer
         3,60,66,48,61,63,68,64,52,58,59,149,151,150,
         8,44,62,47,49,50,51,53,54,55,140,152,6,
         116,69,67,46,65,45,57,56,142,144,145,117,
-        118,70,156,18,118,70,119};
+        118,70,156,18,156,70,119};
         static List<string> KBButtonsColor = new List<string>// Серый:#FFA3A3A3 Розовый:#FFED9B9B Желтый:#FFEBE871 Зеленый:#FF6BF378 Синий:#FF6BC7F3 Фиолетовый:#FFB78EE9 
         {"#FFED9B9B","#FFED9B9B","#FFED9B9B","#FFEBE871","#FF6BF378","#FF6BC7F3","#FF6BC7F3","#FFB78EE9","#FFB78EE9","#FFA3A3A3","#FFEBE871","#FF6BF378","#FF6BF378","#FFA3A3A3","#FFA3A3A3","#FFA3A3A3","#FFEBE871","#FF6BF378","#FF6BC7F3","#FF6BC7F3", "#FFB78EE9", "#FFB78EE9", "#FFA3A3A3", "#FFEBE871","#FF6BF378","#FF6BF378","#FF6BF378","#FF6BF378",
             "#FFA3A3A3","#FFA3A3A3","#FFEBE871","#FF6BF378","#FF6BC7F3","#FF6BC7F3","#FFB78EE9","#FFB78EE9","#FFA3A3A3","#FFEBE871","#FF6BF378","#FF6BF378","#FFA3A3A3","#FFA3A3A3","#FFA3A3A3","#FFEBE871","#FF6BF378","#FF6BC7F3","#FF6BC7F3","#FFB78EE9","#FFB78EE9","#FFA3A3A3","#FFEBE871","#FF6BF378", "#FFA3A3A3",
@@ -160,7 +160,10 @@ namespace KeyboardTrainer
                 KBFieldButtons[i].FontSize = 20;
                 KBFieldButtons[i].Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(KBButtonsColor[i]));
             }
-            KBFieldButtons[0].Content = "~";
+            MessageBox.Show(Keyboard.GetKeyStates(Key.CapsLock).ToString());
+            if (Keyboard.GetKeyStates(Key.CapsLock).ToString() == "Toggled")
+                UpperCaseOn = true;
+            else UpperCaseOn = false;
             ChangeCase();
         }
 
@@ -268,19 +271,21 @@ namespace KeyboardTrainer
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.LeftShift && KBFieldButtons[0].Content == "`") { ChangeCase(); }      
+            if ((e.Key == Key.LeftShift || e.Key == Key.CapsLock) && KBFieldButtons[0].Content == "`") { UpperCaseOn = true; ChangeCase(); }
+            if (Keyboard.GetKeyStates(Key.CapsLock).ToString() == "None" && e.Key == Key.CapsLock && KBFieldButtons[0].Content == "~") { UpperCaseOn = false; ChangeCase(); }
             for (int i = 0; i < KBButtonsKeyCode.Count; i++)
             {
                 if (Convert.ToInt32(e.Key) == KBButtonsKeyCode[i])
                 {
                     keyDown = i;
-                    KBFieldButtons[keyDown].Background = new SolidColorBrush(Colors.White);
+                    KBFieldButtons[keyDown].Background = new SolidColorBrush(Colors.DarkSlateGray);
                 }
             }
         }
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.IsUp && e.Key == Key.LeftShift) ChangeCase();
+            if (KBFieldButtons[0].Content == "~" && e.Key == Key.LeftShift && e.IsUp) { UpperCaseOn = false; ChangeCase(); }
+            if (Keyboard.GetKeyStates(Key.CapsLock).ToString() == "None" && e.Key == Key.CapsLock && KBFieldButtons[0].Content == "~") { UpperCaseOn = false; ChangeCase(); }
             KBFieldButtons[keyDown].Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(KBButtonsColor[keyDown]));
             for (int i = 0; i < KBBCount; i++)  //Устраняет залипание Shift+AnyKey,когда 2 нажатых клавишы не дают поменять цвет обратно.
             {KBFieldButtons[i].Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(KBButtonsColor[i]));}

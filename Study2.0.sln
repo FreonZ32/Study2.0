@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyboardTrainer", "Keyboard
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProgressBarSlider", "ProgressBarSlider\ProgressBarSlider.csproj", "{15E27C6A-DDDB-4392-8238-B3D4F78440B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calendar", "Calendar\Calendar.csproj", "{E8E0E8D9-1351-4DF2-A2B7-4A4183E45715}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calendar2", "Calendar2\Calendar2.csproj", "{9477DCA4-7760-44E1-AF53-E0CADFDC76C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{15E27C6A-DDDB-4392-8238-B3D4F78440B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15E27C6A-DDDB-4392-8238-B3D4F78440B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15E27C6A-DDDB-4392-8238-B3D4F78440B4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E8E0E8D9-1351-4DF2-A2B7-4A4183E45715}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E8E0E8D9-1351-4DF2-A2B7-4A4183E45715}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E8E0E8D9-1351-4DF2-A2B7-4A4183E45715}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E8E0E8D9-1351-4DF2-A2B7-4A4183E45715}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9477DCA4-7760-44E1-AF53-E0CADFDC76C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9477DCA4-7760-44E1-AF53-E0CADFDC76C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9477DCA4-7760-44E1-AF53-E0CADFDC76C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9477DCA4-7760-44E1-AF53-E0CADFDC76C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

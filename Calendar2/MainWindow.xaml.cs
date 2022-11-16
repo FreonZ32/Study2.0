@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Calendar
+namespace Calendar2
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -25,7 +24,6 @@ namespace Calendar
         {
             InitializeComponent();
         }
-
         private void Calendar1_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
             DateTime? selectedDate = Calendar1.SelectedDate;

@@ -178,6 +178,7 @@ namespace KeyboardTrainer
             StartBtn.IsEnabled = false;
             DifficultySlider.IsEnabled = false;
             InputTextBox.IsEnabled = true;
+            CaseSensetiveCheckBox.IsEnabled = false;
             InputTextBox.Text = "";
             inputText = "";
             timeStart = DateTime.Now;
@@ -200,6 +201,7 @@ namespace KeyboardTrainer
             DifficultySlider.IsEnabled = true;
             if(InputTextBox.IsEnabled == true) InputTextBox.IsEnabled = false;
             if (timer.IsEnabled!=false)timer.Stop();
+            CaseSensetiveCheckBox.IsEnabled = true;
         }
 
         private void TextGenerator(int diffculty)

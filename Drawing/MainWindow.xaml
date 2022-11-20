@@ -1,0 +1,39 @@
+﻿<Window x:Class="Drawing.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Drawing"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.2*"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <ListBox x:Name="Toolss" SelectedIndex="0" Background="#FFA1C8FF" >
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <Image Width="40" Height="40" Source="C:\Users\Anatoliy\source\repos\Study2.0\Drawing\Кисть.png" ></Image>
+                <Image Width="40" Height="40" Source="C:\Users\Anatoliy\source\repos\Study2.0\Drawing\Линия.png"></Image>
+                <Image Width="40" Height="40" Source="C:\Users\Anatoliy\source\repos\Study2.0\Drawing\Круг.png"></Image>
+                <Image Width="40" Height="40" Source="C:\Users\Anatoliy\source\repos\Study2.0\Drawing\Трехугольник.png"></Image>
+                <Image Width="40" Height="40" Source="C:\Users\Anatoliy\source\repos\Study2.0\Drawing\Четырехугольник.png"></Image>
+            </ListBox>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Background="#FFA1C8FF">
+                <Label VerticalAlignment="Center" FontWeight="Bold">Thickness</Label>
+                <Slider x:Name="thikness_status" Width="200" VerticalAlignment="Center" Minimum="1" Maximum="50" ValueChanged="thikness_status_ValueChanged" ></Slider>
+            </StackPanel>
+        </Grid>
+        <Canvas Grid.Row="1" x:Name="DrawingField" Background="Transparent" MouseLeftButtonDown="DrawField_MouseLeftButtonDown" MouseLeftButtonUp="DrawingField_MouseLeftButtonUp" MouseMove="DrawingField_MouseMove" ></Canvas>
+    </Grid>
+</Window>

@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Calendar2", "Calendar2\Cale
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventsProg", "EventsProg\EventsProg.csproj", "{4BA60306-6D42-4D4E-918C-43D8AA6707DB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Developments", "Developments\Developments.csproj", "{FA04855C-4DBC-4344-A951-3FEED461B8D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drawing", "Drawing\Drawing.csproj", "{94B18208-720F-428F-8CA8-A6996B8B0E4A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{4BA60306-6D42-4D4E-918C-43D8AA6707DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BA60306-6D42-4D4E-918C-43D8AA6707DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BA60306-6D42-4D4E-918C-43D8AA6707DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA04855C-4DBC-4344-A951-3FEED461B8D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA04855C-4DBC-4344-A951-3FEED461B8D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA04855C-4DBC-4344-A951-3FEED461B8D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA04855C-4DBC-4344-A951-3FEED461B8D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94B18208-720F-428F-8CA8-A6996B8B0E4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94B18208-720F-428F-8CA8-A6996B8B0E4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94B18208-720F-428F-8CA8-A6996B8B0E4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94B18208-720F-428F-8CA8-A6996B8B0E4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

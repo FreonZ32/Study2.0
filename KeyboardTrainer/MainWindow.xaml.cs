@@ -209,6 +209,7 @@ namespace KeyboardTrainer
             {caseSensetive = true;}
             else
             {caseSensetive = false;}
+
         }
         private void InputTextBox_KeyUp(object sender, KeyEventArgs e)
         {

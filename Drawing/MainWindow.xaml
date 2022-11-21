@@ -10,6 +10,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="0.2*"></RowDefinition>
             <RowDefinition></RowDefinition>
+            <RowDefinition Height="0.08*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
@@ -34,6 +35,10 @@
                 <Slider x:Name="thikness_status" Width="200" VerticalAlignment="Center" Minimum="1" Maximum="50" ValueChanged="thikness_status_ValueChanged" ></Slider>
             </StackPanel>
         </Grid>
-        <Canvas Grid.Row="1" x:Name="DrawingField" Background="Transparent" MouseLeftButtonDown="DrawField_MouseLeftButtonDown" MouseLeftButtonUp="DrawingField_MouseLeftButtonUp" MouseMove="DrawingField_MouseMove" ></Canvas>
+        <Canvas Grid.Row="1" x:Name="DrawingField" Background="Transparent" MouseLeftButtonDown="DrawField_MouseLeftButtonDown" MouseLeftButtonUp="DrawingField_MouseLeftButtonUp" MouseMove="DrawingField_MouseMove" MouseLeave="DrawingField_MouseLeave" ></Canvas>
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Image Source="C:\Users\Anatoliy\source\repos\Study2.0\Drawing\Разрешение.png"></Image>
+            <Label x:Name="PositionOfCoursor">0x0пкс</Label>
+        </StackPanel>
     </Grid>
 </Window>

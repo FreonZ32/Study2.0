@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,10 +23,11 @@ namespace Drawing
     /// </summary>
     public partial class MainWindow : Window
     {
-        bool MouseIsStillDown = false;
         int thikness = 1;
         double first_pointX = 0;
         double first_pointY = 0;
+        Color SelectedColor = Color.FromRgb(0, 0, 0);
+        bool MoveIsStart = false;
         public MainWindow()
         {
             InitializeComponent();
@@ -34,39 +36,70 @@ namespace Drawing
 
         private void DrawField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            MouseIsStillDown = true;
             first_pointX = e.GetPosition(DrawingField).X;
             first_pointY = e.GetPosition(DrawingField).Y;
         }
 
         private void DrawingField_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            MouseIsStillDown=false;
+            DrawingPoint(e.GetPosition(DrawingField).X, e.GetPosition(DrawingField).Y);
+        }
+        private void DrawingField_MouseLeave(object sender, MouseEventArgs e)
+        {
+           
         }
 
         private void DrawingField_MouseMove(object sender, MouseEventArgs e)
         {
-            if(MouseIsStillDown == true)
+            if(Mouse.LeftButton != MouseButtonState.Pressed) MoveIsStart = false;
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
                 if (Toolss.SelectedIndex == 0)
                 {
-                    var myRect = new Rectangle();
-                    myRect.Fill = Brushes.Black;
-                    myRect.Width = thikness;
-                    myRect.Height = thikness;
-                    int PositionX = (int)(Math.Floor(e.GetPosition(DrawingField).X / thikness) * thikness);
-                    // вычисляем позицию по оси X для добавления прямоугольника 
-                    int PositionY = (int)(Math.Floor(e.GetPosition(DrawingField).Y / thikness) * thikness);
-                    // вычисляем позицию по оси Y для добавления прямоугольника
-                    Canvas.SetLeft(myRect, PositionX);
-                    Canvas.SetTop(myRect, PositionY);
-                    DrawingField.Children.Add(myRect);
+                    DrawingPoint(e.GetPosition(DrawingField).X, e.GetPosition(DrawingField).Y);
+                }
+                if (Toolss.SelectedIndex == 1)
+                {
+                    if (MoveIsStart == true)
+                    {
+                        Thread.Sleep(10);
+                        UIElement Child = DrawingField.Children[DrawingField.Children.Count - 1];
+                        DrawingField.Children.Remove(Child);
+                    }
+                    DrawingLine(e.GetPosition(DrawingField).X, e.GetPosition(DrawingField).Y);
+                    MoveIsStart = true;
                 }
             }
+            if(e.GetPosition(DrawingField).X>0 && e.GetPosition(DrawingField).Y>0) PositionOfCoursor.Content = Convert.ToInt32(e.GetPosition(DrawingField).X).ToString() + "x" + Convert.ToInt32(e.GetPosition(DrawingField).Y).ToString() + "пкс";
         }
         private void thikness_status_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             thikness = Convert.ToInt32(e.NewValue);
+        }
+        private void DrawingPoint(double eX, double eY)
+        {
+            Ellipse ellipse = new Ellipse();
+            ellipse.Fill = new SolidColorBrush(SelectedColor);
+            ellipse.Width = thikness;
+            ellipse.Height = thikness;
+            double PositionX = eX - thikness / 2;
+            double PositionY = eY - thikness / 2;
+            Canvas.SetLeft(ellipse, PositionX);
+            Canvas.SetTop(ellipse, PositionY);
+            DrawingField.Children.Add(ellipse);
+        }
+        private void DrawingLine( double eX, double eY)
+        {
+            Line BrushLine = new Line();
+            BrushLine.Fill = new SolidColorBrush(SelectedColor);
+            BrushLine.Stroke = new SolidColorBrush(SelectedColor);
+            BrushLine.StrokeThickness = thikness;
+            BrushLine.SnapsToDevicePixels = true;
+            BrushLine.X1 = first_pointX;
+            BrushLine.Y1 = first_pointY;
+            BrushLine.X2 = eX;
+            BrushLine.Y2 = eY;
+            DrawingField.Children.Add(BrushLine);
         }
     }
 }

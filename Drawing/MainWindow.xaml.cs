@@ -42,11 +42,11 @@ namespace Drawing
 
         private void DrawingField_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            DrawingPoint(e.GetPosition(DrawingField).X, e.GetPosition(DrawingField).Y);
+            if(Toolss.SelectedIndex == 0) DrawingPoint(e.GetPosition(DrawingField).X, e.GetPosition(DrawingField).Y);
         }
         private void DrawingField_MouseLeave(object sender, MouseEventArgs e)
         {
-           
+
         }
 
         private void DrawingField_MouseMove(object sender, MouseEventArgs e)
@@ -69,6 +69,17 @@ namespace Drawing
                     DrawingLine(e.GetPosition(DrawingField).X, e.GetPosition(DrawingField).Y);
                     MoveIsStart = true;
                 }
+                if (Toolss.SelectedIndex == 2)
+                {
+                    if (MoveIsStart == true)
+                    {
+                        Thread.Sleep(10);
+                        UIElement Child = DrawingField.Children[DrawingField.Children.Count - 1];
+                        DrawingField.Children.Remove(Child);
+                    }
+                    DrawingEllipse(e.GetPosition(DrawingField).X, e.GetPosition(DrawingField).Y);
+                    MoveIsStart = true;
+                }
             }
             if(e.GetPosition(DrawingField).X>0 && e.GetPosition(DrawingField).Y>0) PositionOfCoursor.Content = Convert.ToInt32(e.GetPosition(DrawingField).X).ToString() + "x" + Convert.ToInt32(e.GetPosition(DrawingField).Y).ToString() + "пкс";
         }
@@ -83,7 +94,11 @@ namespace Drawing
             ellipse.Width = thikness;
             ellipse.Height = thikness;
             double PositionX = eX - thikness / 2;
+            if(PositionX < 0 )PositionX = 0;
+            if( PositionX > DrawingField.Width) PositionX = DrawingField.Width;//Не обязательно,но для перестраховки думаю стоит
             double PositionY = eY - thikness / 2;
+            if (PositionY < 0) PositionY = 0;
+            if(PositionY > DrawingField.Height) PositionY = DrawingField.Height;
             Canvas.SetLeft(ellipse, PositionX);
             Canvas.SetTop(ellipse, PositionY);
             DrawingField.Children.Add(ellipse);
@@ -100,6 +115,24 @@ namespace Drawing
             BrushLine.X2 = eX;
             BrushLine.Y2 = eY;
             DrawingField.Children.Add(BrushLine);
+        }
+        private void DrawingEllipse(double eX, double eY)
+        {
+            Ellipse ellipse = new Ellipse();
+            ellipse.Stroke = new SolidColorBrush(SelectedColor);
+            ellipse.StrokeThickness = thikness;
+            double PositionX, PositionY;
+            if (eX > first_pointX)
+            {PositionX = first_pointX;ellipse.Width = eX - first_pointX;}
+            else
+            {PositionX = eX;ellipse.Width = first_pointX - eX;}
+            if (eY > first_pointY)
+            {PositionY = first_pointY;ellipse.Height = eY - first_pointY;}
+            else
+            {PositionY = eY;ellipse.Height = first_pointY - eY;}
+            Canvas.SetLeft(ellipse, PositionX);
+            Canvas.SetTop(ellipse, PositionY);
+            DrawingField.Children.Add(ellipse);
         }
     }
 }

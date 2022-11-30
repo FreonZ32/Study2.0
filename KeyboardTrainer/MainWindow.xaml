@@ -105,6 +105,18 @@
         <TextBlock x:Name="TextToInputTextBlock" Grid.Row="1" Background="#FF9DC2EE" FontSize="18" FontWeight="Bold"></TextBlock>
         <TextBox x:Name="InputTextBox" Grid.Row="2" Background="#FF9DC2EE" FontSize="18" FontWeight="Bold" KeyUp="InputTextBox_KeyUp" IsEnabled="False"></TextBox>
         <Grid x:Name="KeyBoardField" Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid x:Name="KBFGridFirst" Grid.Row="0"></Grid>
+            <Grid x:Name="KBFGridSecond" Grid.Row="1"></Grid>
+            <Grid x:Name="KBFGridThird" Grid.Row="2"></Grid>
+            <Grid x:Name="KBFGridFouth" Grid.Row="3"></Grid>
+            <Grid x:Name="KBFGridFifth" Grid.Row="4"></Grid>
         </Grid>
     </Grid>
 </Window>

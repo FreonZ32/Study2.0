@@ -16,6 +16,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.IO;
+using System.Windows.Automation.Provider;
 
 namespace KeyboardTrainer
 {
@@ -24,146 +26,41 @@ namespace KeyboardTrainer
     /// </summary>
     public partial class MainWindow : Window
     {
-        int fails = 0;
-        double speed = 0;
-        int diffculty = 1;
-        String textToInput = "";
-        String inputText = "";
+        int fails = 0;  //Счетчик ошибок ввода
+        double speed = 0;   //Счетчик скорости ввода
+        int diffculty = 1;  //По умолчанию установка сложности
+        String textToInput = "";    //Поле вывода текста
+        String inputText = "";  //Поле ввода текста
         DispatcherTimer timer;
         DateTime timeStart;
-        bool caseSensetive = false;
-        int KBBCount;
-        bool UpperCaseOn = false;
-        List<ColumnDefinition> KBFGridFirstColumns;
-        List<Button> KBFieldButtons;
-        static List<string> KBButtonsContentLowCase = new List<string>
-        {"`","1","2","3","4","5","6","7","8","9","0","-","=","Backspace",
-            "Tab","q","w","e","r","t", "y", "u", "i", "o","p","[","]","\\",
-            "Caps Lock","a","s","d","f","g","h","j","k","l",";","'","Enter",
-            "Shift","z","x","c","v","b","n","m",",",".","/", "Shift",
-            "Ctrl", "Win", "Alt","Space","Alt","Win","Ctrl" };
-        static List<string> KBButtonsContentUpperCase = new List<string>
-        {"~","!","@","#","$","%","^","&","*","(",")","_","+","Backspace",
-            "Tab","Q","W","E","R","T", "Y", "U", "I", "O","P","{","}","|",
-            "Caps Lock","A","S","D","F","G","H","J","K","L",":","\"","Enter",
-            "Shift","Z","X","C","V","B","N","M","<",">","?", "Shift",
-            "Ctrl", "Win", "Alt","Space","Alt","Win","Ctrl" };
-        static List<int> KBButtonsKeyCode = new List<int>
-        {146,35,36,37,38,39,40,41,42,43,34,143,141,2,
-        3,60,66,48,61,63,68,64,52,58,59,149,151,150,
-        8,44,62,47,49,50,51,53,54,55,140,152,6,
-        116,69,67,46,65,45,57,56,142,144,145,117,
-        118,70,156,18,156,70,119};
-        static List<string> KBButtonsColor = new List<string>// Серый:#FFA3A3A3 Розовый:#FFED9B9B Желтый:#FFEBE871 Зеленый:#FF6BF378 Синий:#FF6BC7F3 Фиолетовый:#FFB78EE9 
-        {"#FFED9B9B","#FFED9B9B","#FFED9B9B","#FFEBE871","#FF6BF378","#FF6BC7F3","#FF6BC7F3","#FFB78EE9","#FFB78EE9","#FFED9B9B","#FFEBE871","#FF6BF378","#FF6BF378","#FFA3A3A3",
-            "#FFA3A3A3","#FFED9B9B","#FFEBE871","#FF6BF378","#FF6BC7F3","#FF6BC7F3", "#FFB78EE9", "#FFB78EE9", "#FFED9B9B", "#FFEBE871","#FF6BF378","#FF6BF378","#FF6BF378","#FF6BF378",
-            "#FFA3A3A3","#FFED9B9B","#FFEBE871","#FF6BF378","#FF6BC7F3","#FF6BC7F3","#FFB78EE9","#FFB78EE9","#FFED9B9B","#FFEBE871","#FF6BF378","#FF6BF378","#FFA3A3A3",
-            "#FFA3A3A3","#FFED9B9B","#FFEBE871","#FF6BF378","#FF6BC7F3","#FF6BC7F3","#FFB78EE9","#FFB78EE9","#FFED9B9B","#FFEBE871","#FF6BF378", "#FFA3A3A3",
-            "#FFA3A3A3", "#FFA3A3A3", "#FFA3A3A3","#FFEBE871","#FFA3A3A3","#FFA3A3A3","#FFA3A3A3" };
-        int keyDown;
+        bool caseSensetive = false; //ЧекБокс Верхнего регистра
+        int KBBCount;   //Общее количество кнопок
+        bool UpperCaseOn = false;   //Состояние Верхнего регистра (Берется состояние Shift и CapsLock)
+        int keyDown;    //Порядковый номер нажатой клавиши в KBFieldButtons
+        List<Button> KBFieldButtons = new List<Button>();    //Лист всех кнопок для дальнейшего обращения и изменения их состояния.
+        List<string> KBButtonsContentLowCase = new List<string> { };    //Лист нижнего регистра кнопок
+        List<string> KBButtonsContentUpperCase = new List<string> { };  //Лист верхнего регистра кнопок
+        List<int> KBButtonsKeyCode = new List<int> { }; //Лист кодов каждой клавиши
+        List<string> KBButtonsColor = new List<string> { }; //Лист цветов клавиш
+        List<ColumnDefinition> KBFGridFirstColumns = new List<ColumnDefinition>();
+        List<ColumnDefinition> KBFGridSecondColumns = new List<ColumnDefinition>();
+        List<ColumnDefinition> KBFGridThirdColumns = new List<ColumnDefinition>();
+        List<ColumnDefinition> KBFGridFouthColumns = new List<ColumnDefinition>();
+        List<ColumnDefinition> KBFGridFifthColumns = new List<ColumnDefinition>();
 
         public MainWindow()
         {
             InitializeComponent();
-            DifficultyTextBlock.Text = "1";
+            DifficultyTextBlock.Text = diffculty.ToString();
             FailsTextBlock.Text = "0";
             SpeedTextBlock.Text = "0";
             timer = new DispatcherTimer();
             timer.Tick += new EventHandler(timerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
-            //Действия с xaml-------------------------------------------------------
-            RowDefinition rowDefinition1 = new RowDefinition();
-            RowDefinition rowDefinition2 = new RowDefinition();
-            RowDefinition rowDefinition3 = new RowDefinition();
-            RowDefinition rowDefinition4 = new RowDefinition();
-            RowDefinition rowDefinition5 = new RowDefinition();
-            KeyBoardField.RowDefinitions.Add(rowDefinition1);
-            KeyBoardField.RowDefinitions.Add(rowDefinition2);
-            KeyBoardField.RowDefinitions.Add(rowDefinition3);
-            KeyBoardField.RowDefinitions.Add(rowDefinition4);
-            KeyBoardField.RowDefinitions.Add(rowDefinition5);
-            Grid KBFGridFirst = new Grid();
-            Grid KBFGridSecond = new Grid();
-            Grid KBFGridThird = new Grid();
-            Grid KBFGridFouth = new Grid();
-            Grid KBFGridFifth = new Grid();
-            KeyBoardField.Children.Add(KBFGridFirst);
-            Grid.SetRow(KBFGridFirst, 0);
-            KeyBoardField.Children.Add(KBFGridSecond);
-            Grid.SetRow(KBFGridSecond, 1);
-            KeyBoardField.Children.Add(KBFGridThird);
-            Grid.SetRow(KBFGridThird, 2);
-            KeyBoardField.Children.Add(KBFGridFouth);
-            Grid.SetRow(KBFGridFouth, 3);
-            KeyBoardField.Children.Add(KBFGridFifth);
-            Grid.SetRow(KBFGridFifth, 4);
-            KBFGridFirstColumns = new List<ColumnDefinition>();
-            KBFieldButtons = new List<Button>();
-            //1ая строка
-            for (KBBCount = 0; KBBCount < 14; KBBCount++)
-            {
-                KBFGridFirstColumns.Add(new ColumnDefinition());
-                KBFGridFirst.ColumnDefinitions.Add(KBFGridFirstColumns[KBBCount]);
-                KBFieldButtons.Add(new Button());
-                KBFGridFirst.Children.Add(KBFieldButtons[KBBCount]);
-                Grid.SetColumn(KBFieldButtons[KBBCount], KBBCount);
-            }
-            KBFGridFirstColumns[13].Width = new GridLength(2, GridUnitType.Star);
-            //2ая строка
-            List<ColumnDefinition> KBFGridSecondColumns = new List<ColumnDefinition>();
-            for (int i = 0; i < 14; i++, KBBCount++)
-            {
-                KBFGridSecondColumns.Add(new ColumnDefinition());
-                KBFGridSecond.ColumnDefinitions.Add(KBFGridSecondColumns[i]);
-                KBFieldButtons.Add(new Button());
-                KBFGridSecond.Children.Add(KBFieldButtons[KBBCount]);
-                Grid.SetColumn(KBFieldButtons[KBBCount], i);
-            }
-            KBFGridSecondColumns[0].Width = new GridLength(1.5, GridUnitType.Star);
-            KBFGridSecondColumns[13].Width = new GridLength(1.5, GridUnitType.Star);
-            //3ая строка
-            List<ColumnDefinition> KBFGridThirdColumns = new List<ColumnDefinition>();
-            for (int i = 0; i < 13; i++, KBBCount++)
-            {
-                KBFGridThirdColumns.Add(new ColumnDefinition());
-                KBFGridThird.ColumnDefinitions.Add(KBFGridThirdColumns[i]);
-                KBFieldButtons.Add(new Button());
-                KBFGridThird.Children.Add(KBFieldButtons[KBBCount]);
-                Grid.SetColumn(KBFieldButtons[KBBCount], i);
-            }
-            KBFGridThirdColumns[0].Width = new GridLength(2, GridUnitType.Star);
-            KBFGridThirdColumns[12].Width = new GridLength(2, GridUnitType.Star);
-            //4ая строка
-            List<ColumnDefinition> KBFGridFouthColumns = new List<ColumnDefinition>();
-            for (int i = 0; i < 12; i++, KBBCount++)
-            {
-                KBFGridFouthColumns.Add(new ColumnDefinition());
-                KBFGridFouth.ColumnDefinitions.Add(KBFGridFouthColumns[i]);
-                KBFieldButtons.Add(new Button());
-                KBFGridFouth.Children.Add(KBFieldButtons[KBBCount]);
-                Grid.SetColumn(KBFieldButtons[KBBCount], i);
-            }
-            KBFGridFouthColumns[0].Width = new GridLength(2.5, GridUnitType.Star);
-            KBFGridFouthColumns[11].Width = new GridLength(2.5, GridUnitType.Star);
-            //5ая строка
-            List<ColumnDefinition> KBFGridFifthColumns = new List<ColumnDefinition>();
-            for (int i = 0; i < 7; i++, KBBCount++)
-            {
-                KBFGridFifthColumns.Add(new ColumnDefinition());
-                KBFGridFifth.ColumnDefinitions.Add(KBFGridFifthColumns[i]);
-                KBFieldButtons.Add(new Button());
-                KBFGridFifth.Children.Add(KBFieldButtons[KBBCount]);
-                Grid.SetColumn(KBFieldButtons[KBBCount], i);
-            }
-            KBFGridFifthColumns[3].Width = new GridLength(4, GridUnitType.Star);
-
-            for (int i = 0; i < KBBCount; i++)
-            {
-                KBFieldButtons[i].Style = (Style)this.TryFindResource("RoundButtomBorder");
-                KBFieldButtons[i].IsEnabled = false;
-                KBFieldButtons[i].FontSize = 20;
-                KBFieldButtons[i].Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(KBButtonsColor[i]));
-            }
+            bool KBIntialisation = ButtomInfoReader();
+            if (KBIntialisation == true)
+                ButtomFieldGenerator();
+            else this.Close();
             if (Keyboard.GetKeyStates(Key.CapsLock).ToString() == "Toggled")
                 UpperCaseOn = true;
             else UpperCaseOn = false;
@@ -182,7 +79,8 @@ namespace KeyboardTrainer
         }
         private void StartBtn_Click(object sender, RoutedEventArgs e)
         {
-            fails = 0;
+            speed = 0;SpeedTextBlock.Text = "0";
+            fails = 0;FailsTextBlock.Text = "0";
             StartBtn.IsEnabled = false;
             DifficultySlider.IsEnabled = false;
             InputTextBox.IsEnabled = true;
@@ -285,6 +183,127 @@ namespace KeyboardTrainer
                         default: MessageBox.Show("!!!!"); break;
                     }
                 }
+            }
+        }
+        private bool ButtomInfoReader()
+        {
+            string exePath = AppDomain.CurrentDomain.BaseDirectory;
+            string path = System.IO.Path.Combine(exePath, "BTNInfo\\EnLang.txt");
+            if (path == "") { MessageBox.Show("Не удается найти файл настроек кнопок!"); return false; }
+            StreamReader streamsreader = new StreamReader(path);
+            String line;
+            try
+            {
+                line = streamsreader.ReadLine();
+                line = streamsreader.ReadLine();
+                while (line != "KBButtonsContentUpperCase")
+                {
+                    KBButtonsContentLowCase.Add(line);
+                    line = streamsreader.ReadLine();
+                }
+                line = streamsreader.ReadLine();
+                while (line != "KBButtonsKeyCode")
+                {
+                    KBButtonsContentUpperCase.Add(line);
+                    line = streamsreader.ReadLine();
+                }
+                line = streamsreader.ReadLine();
+                while (line != "KBButtonsColor")
+                {
+                    KBButtonsKeyCode.Add(Int32.Parse(line));
+                    line = streamsreader.ReadLine();
+                }
+                line = streamsreader.ReadLine();
+                while (line != "End")
+                {
+                    KBButtonsColor.Add(line);
+                    line = streamsreader.ReadLine();
+                }
+                if (KBButtonsContentLowCase.Count != 60|| KBButtonsContentUpperCase.Count!=60||KBButtonsKeyCode.Count!=60 || KBButtonsColor.Count!=60)
+                {
+                    MessageBox.Show("Ошибка в строении файла языковой настройки! Должно быть 60 клавиш!" + 
+                        "Ваше количество:" + KBButtonsContentLowCase.Count.ToString() + " " + KBButtonsContentUpperCase.Count.ToString() + " " + KBButtonsKeyCode.Count.ToString() + " " + KBButtonsColor.Count.ToString());
+                    KBButtonsContentLowCase.Clear();
+                    KBButtonsContentUpperCase.Clear();
+                    KBButtonsKeyCode.Clear();
+                    KBButtonsColor.Clear();
+                    return false;
+                }    
+                streamsreader.Close();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                streamsreader.Close();
+                MessageBox.Show("Ошибка строения файла: " + ex);
+                KBButtonsContentLowCase.Clear();
+                KBButtonsContentUpperCase.Clear();
+                KBButtonsKeyCode.Clear();
+                KBButtonsColor.Clear();
+                return false;
+            }
+        }
+        private void ButtomFieldGenerator()
+        {
+            //1ая строка
+            for (KBBCount = 0; KBBCount < 14; KBBCount++)
+            {
+                KBFGridFirstColumns.Add(new ColumnDefinition());
+                KBFGridFirst.ColumnDefinitions.Add(KBFGridFirstColumns[KBBCount]);
+                KBFieldButtons.Add(new Button());
+                KBFGridFirst.Children.Add(KBFieldButtons[KBBCount]);
+                Grid.SetColumn(KBFieldButtons[KBBCount], KBBCount);
+            }
+            KBFGridFirstColumns[13].Width = new GridLength(2, GridUnitType.Star);
+            //2ая строка
+            for (int i = 0; i < 14; i++, KBBCount++)
+            {
+                KBFGridSecondColumns.Add(new ColumnDefinition());
+                KBFGridSecond.ColumnDefinitions.Add(KBFGridSecondColumns[i]);
+                KBFieldButtons.Add(new Button());
+                KBFGridSecond.Children.Add(KBFieldButtons[KBBCount]);
+                Grid.SetColumn(KBFieldButtons[KBBCount], i);
+            }
+            KBFGridSecondColumns[0].Width = new GridLength(1.5, GridUnitType.Star);
+            KBFGridSecondColumns[13].Width = new GridLength(1.5, GridUnitType.Star);
+            //3ая строка
+            for (int i = 0; i < 13; i++, KBBCount++)
+            {
+                KBFGridThirdColumns.Add(new ColumnDefinition());
+                KBFGridThird.ColumnDefinitions.Add(KBFGridThirdColumns[i]);
+                KBFieldButtons.Add(new Button());
+                KBFGridThird.Children.Add(KBFieldButtons[KBBCount]);
+                Grid.SetColumn(KBFieldButtons[KBBCount], i);
+            }
+            KBFGridThirdColumns[0].Width = new GridLength(2, GridUnitType.Star);
+            KBFGridThirdColumns[12].Width = new GridLength(2, GridUnitType.Star);
+            //4ая строка
+            for (int i = 0; i < 12; i++, KBBCount++)
+            {
+                KBFGridFouthColumns.Add(new ColumnDefinition());
+                KBFGridFouth.ColumnDefinitions.Add(KBFGridFouthColumns[i]);
+                KBFieldButtons.Add(new Button());
+                KBFGridFouth.Children.Add(KBFieldButtons[KBBCount]);
+                Grid.SetColumn(KBFieldButtons[KBBCount], i);
+            }
+            KBFGridFouthColumns[0].Width = new GridLength(2.5, GridUnitType.Star);
+            KBFGridFouthColumns[11].Width = new GridLength(2.5, GridUnitType.Star);
+            //5ая строка
+            for (int i = 0; i < 7; i++, KBBCount++)
+            {
+                KBFGridFifthColumns.Add(new ColumnDefinition());
+                KBFGridFifth.ColumnDefinitions.Add(KBFGridFifthColumns[i]);
+                KBFieldButtons.Add(new Button());
+                KBFGridFifth.Children.Add(KBFieldButtons[KBBCount]);
+                Grid.SetColumn(KBFieldButtons[KBBCount], i);
+            }
+            KBFGridFifthColumns[3].Width = new GridLength(4, GridUnitType.Star);
+            for (int i = 0; i < KBBCount; i++)
+            {
+                KBFieldButtons[i].Style = (Style)this.TryFindResource("RoundButtomBorder");
+                KBFieldButtons[i].IsEnabled = false;
+                KBFieldButtons[i].FontSize = 20;
+                KBFieldButtons[i].Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(KBButtonsColor[i]));
             }
         }
     }

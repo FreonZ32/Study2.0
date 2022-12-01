@@ -72,7 +72,6 @@ namespace KeyboardTrainer
                 CapsLockCaseOn = true;
             else CapsLockCaseOn = false;
             ChangeCase();
-            MessageBox.Show(Convert.ToInt32("я").ToString());
         }
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KeyboardTrainer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp">
+        Title="KeyBoardTrainer" Height="450" Width="800" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" WindowStartupLocation="CenterScreen" PreviewKeyUp="Window_PreviewKeyUp" PreviewKeyDown="Window_PreviewKeyDown">
     <Window.Resources>
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
@@ -61,7 +61,7 @@
             </Setter>
         </Style>
     </Window.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"></RowDefinition>
@@ -70,6 +70,12 @@
             <RowDefinition Height="5*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
+            <Grid.Background>
+                <RadialGradientBrush>
+                    <GradientStop Color="#FF77B5FF"/>
+                    <GradientStop Color="#33006EEE" Offset="1"/>
+                </RadialGradientBrush>
+            </Grid.Background>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
@@ -80,27 +86,32 @@
                 <RowDefinition></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Label FontSize="16">Speed:</Label>
                 <TextBlock x:Name="SpeedTextBlock" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
                 <Label FontSize="16">chars/min</Label>
             </StackPanel>
-            <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+            <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Label FontSize="16">Fails:</Label>
                 <TextBlock x:Name="FailsTextBlock" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
             </StackPanel>
-            <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal">
+            <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Label FontSize="16">Difficulty:</Label>
                 <TextBlock x:Name="DifficultyTextBlock" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"></TextBlock>
                 <Slider x:Name="DifficultySlider" VerticalAlignment="Center" ValueChanged="Slider_ValueChanged" Width="90" HorizontalAlignment="Center" Minimum="1"/>
             </StackPanel>
-            <StackPanel Grid.Column="3" Grid.Row="0" Orientation="Horizontal">
+            <StackPanel Grid.Column="3" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
                 <CheckBox x:Name="CaseSensetiveCheckBox" VerticalAlignment="Center" Click="CaseSensetiveCheckBox_Click" ></CheckBox>
                 <Label FontSize="16">Case Sensetive</Label>
             </StackPanel>
-            <Button x:Name="StartBtn" Grid.Column="2" Grid.Row="1" Click="StartBtn_Click">Start</Button>
-            <Button x:Name="StopBtn" Grid.Column="3" Grid.Row="1" Click="StopBtn_Click">Stop</Button>
-            <TextBlock x:Name="TimerDbg" FontSize="16" FontWeight="Bold" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+            <Button x:Name="StartBtn" Grid.Column="0" Grid.Row="1" Click="StartBtn_Click" Background="#33006EEE" BorderBrush="#AE707070" Margin="2">Start</Button>
+            <Button x:Name="StopBtn" Grid.Column="1" Grid.Row="1" Click="StopBtn_Click" Background="#33006EEE" BorderBrush="#AE707070" Margin="2">Stop</Button>
+            <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                <RadioButton x:Name="EngRB" VerticalAlignment="Center" IsEnabled="False" IsChecked="True"/>
+                <Label>Eng</Label>
+                <RadioButton x:Name="RusRB" VerticalAlignment="Center" IsEnabled="False"/>
+                <Label>Rus</Label>
+            </StackPanel>
         </Grid>
         <TextBlock x:Name="TextToInputTextBlock" Grid.Row="1" Background="#FF9DC2EE" FontSize="18" FontWeight="Bold"></TextBlock>
         <TextBox x:Name="InputTextBox" Grid.Row="2" Background="#FF9DC2EE" FontSize="18" FontWeight="Bold" KeyUp="InputTextBox_KeyUp" IsEnabled="False"></TextBox>

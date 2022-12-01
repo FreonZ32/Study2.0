@@ -18,6 +18,8 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.IO;
 using System.Windows.Automation.Provider;
+using System.Globalization;
+using System.Printing;
 
 namespace KeyboardTrainer
 {
@@ -34,12 +36,15 @@ namespace KeyboardTrainer
         DispatcherTimer timer;
         DateTime timeStart;
         bool caseSensetive = false; //ЧекБокс Верхнего регистра
+        bool KBIntialisation = false; //Состояние чтение файла языковой настройки
         int KBBCount;   //Общее количество кнопок
-        bool UpperCaseOn = false;   //Состояние Верхнего регистра (Берется состояние Shift и CapsLock)
-        int keyDown;    //Порядковый номер нажатой клавиши в KBFieldButtons
+        bool CapsLockCaseOn = false;   //Состояние Верхнего регистра (Берется состояние CapsLock)
+        bool ShiftCaseOn = false;   //Состояние Верхнего регистра (Берется состояние Shift)
+        string InputLangSet = "en-US";  //Дефолтный язык кнопок программы
         List<Button> KBFieldButtons = new List<Button>();    //Лист всех кнопок для дальнейшего обращения и изменения их состояния.
-        List<string> KBButtonsContentLowCase = new List<string> { };    //Лист нижнего регистра кнопок
-        List<string> KBButtonsContentUpperCase = new List<string> { };  //Лист верхнего регистра кнопок
+        List<string> KBButtonsContentNormalCase = new List<string> { };    //Лист нижнего регистра кнопок
+        List<string> KBButtonsContentShiftCase = new List<string> { };  //Лист кнопок при зажатом shift
+        List<string> KBButtonsContentCapsLock = new List<string> { };  //Лист кнопок при зажатом CapsLock
         List<int> KBButtonsKeyCode = new List<int> { }; //Лист кодов каждой клавиши
         List<string> KBButtonsColor = new List<string> { }; //Лист цветов клавиш
         List<ColumnDefinition> KBFGridFirstColumns = new List<ColumnDefinition>();
@@ -57,14 +62,17 @@ namespace KeyboardTrainer
             timer = new DispatcherTimer();
             timer.Tick += new EventHandler(timerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
-            bool KBIntialisation = ButtomInfoReader();
+            InputLangSet = InputLanguageManager.Current.CurrentInputLanguage.ToString();
+            RBLangStatusChange();
+            KBIntialisation = ButtomInfoReader();
             if (KBIntialisation == true)
                 ButtomFieldGenerator();
             else this.Close();
             if (Keyboard.GetKeyStates(Key.CapsLock).ToString() == "Toggled")
-                UpperCaseOn = true;
-            else UpperCaseOn = false;
+                CapsLockCaseOn = true;
+            else CapsLockCaseOn = false;
             ChangeCase();
+            MessageBox.Show(Convert.ToInt32("я").ToString());
         }
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -107,7 +115,6 @@ namespace KeyboardTrainer
             {caseSensetive = true;}
             else
             {caseSensetive = false;}
-
         }
         private void InputTextBox_KeyUp(object sender, KeyEventArgs e)
         {
@@ -118,37 +125,71 @@ namespace KeyboardTrainer
             if (inputText.Length + 1 >= textToInput.Length) { StopBtn_Click(sender, e); return; }
             FailsTextBlock.Text = fails.ToString();
         }
+        //Так как мы еще не работали с потоками, пришлось применить костыль и разделить подсветку кнопок и действия shift и CapsLock таким вот образом.
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if ((e.Key == Key.LeftShift || e.Key == Key.CapsLock) && KBFieldButtons[0].Content == "`") { UpperCaseOn = true; ChangeCase(); }
-            if (Keyboard.GetKeyStates(Key.CapsLock).ToString() == "None" && e.Key == Key.CapsLock && KBFieldButtons[0].Content == "~") { UpperCaseOn = false; ChangeCase(); }
-            for (int i = 0; i < KBButtonsKeyCode.Count; i++)
+            if (e.KeyboardDevice.IsKeyDown(Key.CapsLock))
             {
-                if (Convert.ToInt32(e.Key) == KBButtonsKeyCode[i])
-                {
-                    keyDown = i;
-                    KBFieldButtons[keyDown].Background = new SolidColorBrush(Colors.DarkSlateGray);
-                }
+                if (e.KeyboardDevice.IsKeyToggled(Key.CapsLock))
+                { CapsLockCaseOn = true; ChangeCase(); return; }
+                else
+                { CapsLockCaseOn = false; ChangeCase(); return; }
+            }
+            if(e.KeyboardDevice.Modifiers==ModifierKeys.Shift && ShiftCaseOn ==false)
+            {
+                ShiftCaseOn = true; ChangeCase(); return; 
             }
         }
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-            if (KBFieldButtons[0].Content == "~" && e.Key == Key.LeftShift && e.IsUp) { UpperCaseOn = false; ChangeCase(); }
-            if (Keyboard.GetKeyStates(Key.CapsLock).ToString() == "None" && e.Key == Key.CapsLock && KBFieldButtons[0].Content == "~") { UpperCaseOn = false; ChangeCase(); }
-            KBFieldButtons[keyDown].Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(KBButtonsColor[keyDown]));
-            for (int i = 0; i < KBBCount; i++)  //Устраняет залипание Shift+AnyKey,когда 2 нажатых клавишы не дают поменять цвет обратно.
-            {KBFieldButtons[i].Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(KBButtonsColor[i]));}
+            if(e.KeyboardDevice.IsKeyUp(Key.LeftShift) && ShiftCaseOn == true)
+            {
+                ShiftCaseOn = false; ChangeCase(); return;
+            }
         }
-        //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        private void Window_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            for (int i = 0; i < KBButtonsKeyCode.Count; i++)
+            {
+                if (Convert.ToInt32(e.Key) == KBButtonsKeyCode[i])
+                {KBFieldButtons[i].Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(KBButtonsColor[i]));}
+            }
+            if(InputLanguageManager.Current.CurrentInputLanguage.ToString() != InputLangSet)
+            {
+                if(StartBtn.IsEnabled == true)
+                {
+                    InputLangSet = InputLanguageManager.Current.CurrentInputLanguage.ToString();
+                    ButtomInfoReader();
+                    RBLangStatusChange();
+                    ChangeCase(); return;
+                }
+                else 
+                {
+                    InputLanguageManager.Current.CurrentInputLanguage = new CultureInfo(InputLangSet);
+                    MessageBox.Show("Нельзя менять язык пока запущенна программа!");
+                }
+            }
+        }
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            for (int i = 0; i < KBButtonsKeyCode.Count; i++)
+            {
+                if (Convert.ToInt32(e.Key) == KBButtonsKeyCode[i])
+                { KBFieldButtons[i].Background = new SolidColorBrush(Colors.DarkSlateGray); }
+            }
+        }
+
         private void ChangeCase()
         {
-            if (UpperCaseOn == false)
+            if(ShiftCaseOn == true)
                 for (int i = 0; i < KBBCount; i++)
-                { KBFieldButtons[i].Content = KBButtonsContentLowCase[i]; }
+                { KBFieldButtons[i].Content = KBButtonsContentShiftCase[i]; }
+            else if(CapsLockCaseOn == true)
+                for (int i = 0; i < KBBCount; i++)
+                { KBFieldButtons[i].Content = KBButtonsContentCapsLock[i]; }
             else
                 for (int i = 0; i < KBBCount; i++)
-                { KBFieldButtons[i].Content = KBButtonsContentUpperCase[i]; }
-            UpperCaseOn = !UpperCaseOn;
+                { KBFieldButtons[i].Content = KBButtonsContentNormalCase[i]; }
         }
         private void TextGenerator(int diffculty)
         {
@@ -188,23 +229,32 @@ namespace KeyboardTrainer
         private bool ButtomInfoReader()
         {
             string exePath = AppDomain.CurrentDomain.BaseDirectory;
-            string path = System.IO.Path.Combine(exePath, "BTNInfo\\EnLang.txt");
+            string path = "";
+            if (InputLangSet == "en-US") path = System.IO.Path.Combine(exePath, "BTNInfo\\EnLang.txt");
+            else path = System.IO.Path.Combine(exePath, "BTNInfo\\RuLang.txt");
             if (path == "") { MessageBox.Show("Не удается найти файл настроек кнопок!"); return false; }
             StreamReader streamsreader = new StreamReader(path);
             String line;
             try
             {
+                ClearAllButtonList();
                 line = streamsreader.ReadLine();
                 line = streamsreader.ReadLine();
-                while (line != "KBButtonsContentUpperCase")
+                while (line != "KBButtonsContentShiftCase")
                 {
-                    KBButtonsContentLowCase.Add(line);
+                    KBButtonsContentNormalCase.Add(line);
+                    line = streamsreader.ReadLine();
+                }
+                line = streamsreader.ReadLine();
+                while (line != "KBButtonsContentCapsLockCase")
+                {
+                    KBButtonsContentShiftCase.Add(line);
                     line = streamsreader.ReadLine();
                 }
                 line = streamsreader.ReadLine();
                 while (line != "KBButtonsKeyCode")
                 {
-                    KBButtonsContentUpperCase.Add(line);
+                    KBButtonsContentCapsLock.Add(line);
                     line = streamsreader.ReadLine();
                 }
                 line = streamsreader.ReadLine();
@@ -219,25 +269,22 @@ namespace KeyboardTrainer
                     KBButtonsColor.Add(line);
                     line = streamsreader.ReadLine();
                 }
-                if (KBButtonsContentLowCase.Count != 60|| KBButtonsContentUpperCase.Count!=60||KBButtonsKeyCode.Count!=60 || KBButtonsColor.Count!=60)
-                {
-                    MessageBox.Show("Ошибка в строении файла языковой настройки! Должно быть 60 клавиш!" + 
-                        "Ваше количество:" + KBButtonsContentLowCase.Count.ToString() + " " + KBButtonsContentUpperCase.Count.ToString() + " " + KBButtonsKeyCode.Count.ToString() + " " + KBButtonsColor.Count.ToString());
-                    KBButtonsContentLowCase.Clear();
-                    KBButtonsContentUpperCase.Clear();
-                    KBButtonsKeyCode.Clear();
-                    KBButtonsColor.Clear();
-                    return false;
-                }    
                 streamsreader.Close();
+                if (KBButtonsContentNormalCase.Count != 60 || KBButtonsContentShiftCase.Count != 60 || KBButtonsContentCapsLock.Count != 60 || KBButtonsKeyCode.Count != 60 || KBButtonsColor.Count != 60)
+                {
+                    MessageBox.Show("Ошибка в строении файла языковой настройки! Должно быть 60 60 60 60 60! " +
+                        "Ваше количество: " + KBButtonsContentNormalCase.Count.ToString() + " " + KBButtonsContentShiftCase.Count.ToString() + " " + KBButtonsContentCapsLock.Count.ToString() + KBButtonsKeyCode.Count.ToString() + " " + KBButtonsColor.Count.ToString());
+                    ClearAllButtonList();
+                    return false;
+                }
                 return true;
             }
             catch(Exception ex)
             {
                 streamsreader.Close();
                 MessageBox.Show("Ошибка строения файла: " + ex);
-                KBButtonsContentLowCase.Clear();
-                KBButtonsContentUpperCase.Clear();
+                KBButtonsContentNormalCase.Clear();
+                KBButtonsContentShiftCase.Clear();
                 KBButtonsKeyCode.Clear();
                 KBButtonsColor.Clear();
                 return false;
@@ -304,6 +351,29 @@ namespace KeyboardTrainer
                 KBFieldButtons[i].IsEnabled = false;
                 KBFieldButtons[i].FontSize = 20;
                 KBFieldButtons[i].Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(KBButtonsColor[i]));
+            }
+        }
+        private void ClearAllButtonList()
+        {
+            KBButtonsContentNormalCase.Clear();
+            KBButtonsContentShiftCase.Clear();
+            KBButtonsContentCapsLock.Clear();
+            KBButtonsKeyCode.Clear();
+            KBButtonsColor.Clear();
+        }
+        private void RBLangStatusChange()
+        {
+            if (InputLangSet=="en-US")
+            {
+                EngRB.IsEnabled = true;
+                EngRB.IsChecked = true;
+                EngRB.IsEnabled = false;
+            }
+            else
+            {
+                RusRB.IsEnabled = true;
+                RusRB.IsChecked = true;
+                RusRB.IsEnabled = false;
             }
         }
     }

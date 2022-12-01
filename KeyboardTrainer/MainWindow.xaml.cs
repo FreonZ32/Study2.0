@@ -56,18 +56,22 @@ namespace KeyboardTrainer
         public MainWindow()
         {
             InitializeComponent();
-            DifficultyTextBlock.Text = diffculty.ToString();
+            DifficultyTextBlock.Text = "1";
             FailsTextBlock.Text = "0";
             SpeedTextBlock.Text = "0";
+                    //Создание таймера для подсчета скорости.
             timer = new DispatcherTimer();
             timer.Tick += new EventHandler(timerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
+                    //Установка первичной языковой раскладки, учитывая текущие установки
             InputLangSet = InputLanguageManager.Current.CurrentInputLanguage.ToString();
             RBLangStatusChange();
+                    //Чтение файла с языковой раскладкой (при сбое файла или отсутствии программа укажет ошибку и не запустится)
             KBIntialisation = ButtomInfoReader();
             if (KBIntialisation == true)
                 ButtomFieldGenerator();
             else this.Close();
+                    //Установка настройки CapsLock (если он включен, то тогда и клавиатура будет с включенным CapsLock'oм)
             if (Keyboard.GetKeyStates(Key.CapsLock).ToString() == "Toggled")
                 CapsLockCaseOn = true;
             else CapsLockCaseOn = false;
@@ -160,7 +164,8 @@ namespace KeyboardTrainer
                     InputLangSet = InputLanguageManager.Current.CurrentInputLanguage.ToString();
                     ButtomInfoReader();
                     RBLangStatusChange();
-                    ChangeCase(); return;
+                    ChangeCase();
+                    return;
                 }
                 else 
                 {
@@ -198,16 +203,26 @@ namespace KeyboardTrainer
             {
                 if (random.Next(20) > 1)//рeгулировка частоты появления символов !/} и т д
                 {
-                    if (random.Next(10) >= 1)   //регулировка появления пробелов
+                    if (random.Next(10) >= 1 || textToInput[textToInput.Length-1]== ' ')   //регулировка появления пробелов
                     {
                         if (caseSensetive == true)
                         {
-                            if (random.Next(6) >= 3)   //Регулировка частоты Верхнего и Нижнего регистра.
-                                textToInput += (char)random.Next(65, 90);
+                            if (random.Next(6) >= 3)//Регулировка частоты Верхнего и Нижнего регистра.
+                            {
+                                if (InputLangSet == "en-Us") textToInput += (char)random.Next(65, 90);
+                                else textToInput += (char)random.Next(1040, 1071);
+                            }
                             else
-                                textToInput += (char)random.Next(97, 122);
+                            {
+                                if (InputLangSet == "en-Us") textToInput += (char)random.Next(97, 122);
+                                else textToInput += (char)random.Next(1072, 1103);
+                            }
                         }
-                        else textToInput += (char)random.Next(97, 122);
+                        else
+                        {
+                            if (InputLangSet == "en-Us") textToInput += (char)random.Next(97, 122);
+                            else textToInput += (char)random.Next(1072, 1103);
+                        }
                     }
                     else textToInput += " ";
                 }
@@ -227,11 +242,13 @@ namespace KeyboardTrainer
         }
         private bool ButtomInfoReader()
         {
+                    //Установка пути до файла настроек языковой раскладки
             string exePath = AppDomain.CurrentDomain.BaseDirectory;
             string path = "";
             if (InputLangSet == "en-US") path = System.IO.Path.Combine(exePath, "BTNInfo\\EnLang.txt");
             else path = System.IO.Path.Combine(exePath, "BTNInfo\\RuLang.txt");
             if (path == "") { MessageBox.Show("Не удается найти файл настроек кнопок!"); return false; }
+                    //Чтение файла
             StreamReader streamsreader = new StreamReader(path);
             String line;
             try
@@ -271,7 +288,7 @@ namespace KeyboardTrainer
                 streamsreader.Close();
                 if (KBButtonsContentNormalCase.Count != 60 || KBButtonsContentShiftCase.Count != 60 || KBButtonsContentCapsLock.Count != 60 || KBButtonsKeyCode.Count != 60 || KBButtonsColor.Count != 60)
                 {
-                    MessageBox.Show("Ошибка в строении файла языковой настройки! Должно быть 60 60 60 60 60! " +
+                    MessageBox.Show("Ошибка в строении файла языковой настройки! Должно быть 60 60 60 60 60 символов! " +
                         "Ваше количество: " + KBButtonsContentNormalCase.Count.ToString() + " " + KBButtonsContentShiftCase.Count.ToString() + " " + KBButtonsContentCapsLock.Count.ToString() + KBButtonsKeyCode.Count.ToString() + " " + KBButtonsColor.Count.ToString());
                     ClearAllButtonList();
                     return false;

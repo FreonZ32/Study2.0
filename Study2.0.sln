@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Developments", "Development
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Drawing", "Drawing\Drawing.csproj", "{94B18208-720F-428F-8CA8-A6996B8B0E4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2048Game", "2048Game\2048Game.csproj", "{72463326-FAD7-4423-AA5D-B1DD5B9FC771}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{94B18208-720F-428F-8CA8-A6996B8B0E4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94B18208-720F-428F-8CA8-A6996B8B0E4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94B18208-720F-428F-8CA8-A6996B8B0E4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72463326-FAD7-4423-AA5D-B1DD5B9FC771}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72463326-FAD7-4423-AA5D-B1DD5B9FC771}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72463326-FAD7-4423-AA5D-B1DD5B9FC771}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72463326-FAD7-4423-AA5D-B1DD5B9FC771}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

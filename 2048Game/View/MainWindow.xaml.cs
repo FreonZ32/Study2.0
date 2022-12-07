@@ -20,24 +20,11 @@ namespace _2048Game
     /// </summary>
     public partial class MainWindow : Window
     {
-        int size_of_field;  //размер MainPlayField (изменяется в RBSize_Click)
+        
         public MainWindow()
         {
+            DataContext = new _2048Game.View_Model.MainWindowViewModel();
             InitializeComponent();
-            size_of_field = 4;
-        }
-
-        private void RBSize_Click(object sender, RoutedEventArgs e)
-        {
-            string name = (sender as RadioButton).Name;
-            switch (name)
-            {
-                case "RBSize4": size_of_field = 4; break;
-                case "RBSize8": size_of_field = 8; break;
-                case "RBSize16": size_of_field = 16; break;
-                default:
-                    break;
-            }
         }
     }
 }

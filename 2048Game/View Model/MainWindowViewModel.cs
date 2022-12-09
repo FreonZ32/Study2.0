@@ -8,6 +8,11 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows;
+using System.Collections.ObjectModel;
+using System.Drawing;
+using _2048Game.Model;
+using System.Security.Policy;
+using System.Windows.Media;
 
 namespace _2048Game.View_Model
 {
@@ -19,28 +24,23 @@ namespace _2048Game.View_Model
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        int _size_of_field;  //размер MainPlayField (изменяется в RBSize_Click)
+        int _size_of_field = 4;  //размер MainPlayField (изменяется в RBSize_Click)
         string _RBIsClicked;
+        ObservableCollection<Grid> _playFieldContainer;
+        MainFieldGrid PlayField;
+
         public MainWindowViewModel()
         {
-            SizeOfField = 4;
             ButtonClickCommand = new ButtonClickCommand(OnClicked);
+            _playFieldContainer = new ObservableCollection<Grid>();
+            PlayField = new MainFieldGrid(_size_of_field);
+            PlayFieldContainer.Add(PlayField.FieldGrid);
         }
 
         public ICommand? ButtonClickCommand { get;}
-        public ICommand RBSize_Click
-        {
-            get
-            {
-                return new ButtonCommands((obj) =>
-                { 
-                });
-            }
-        }
-
+        
         private void OnClicked(string NameOfElement)
         { RBIsClicked = NameOfElement;}
-
 
         public string RBIsClicked
         {
@@ -49,8 +49,8 @@ namespace _2048Game.View_Model
             { 
                 _RBIsClicked = value;
                 if (_RBIsClicked == "RBSize4") { SizeOfField = 4; Notify(); return; }
-                if (_RBIsClicked == "RBSize8") { SizeOfField = 4; Notify(); return; }
-                if (_RBIsClicked == "RBSize16") { SizeOfField = 4; Notify(); return; }
+                if (_RBIsClicked == "RBSize8") { SizeOfField = 8; Notify(); return; }
+                if (_RBIsClicked == "RBSize16") { SizeOfField = 16; Notify(); return; }
                 MessageBox.Show("Ошибка в названии радиобокса!");
                 _RBIsClicked = "RBSize4";
                 SizeOfField = 4; Notify();
@@ -64,9 +64,20 @@ namespace _2048Game.View_Model
                 if (value == 4 || value == 8 || value == 16)
                     _size_of_field = value;
                 else _size_of_field = 4;
+                PlayField = new MainFieldGrid(_size_of_field);
+                PlayFieldContainer.Clear();
+                PlayFieldContainer.Add(PlayField.FieldGrid);
                 Notify();
             }
         }
-
+        public ObservableCollection<Grid> PlayFieldContainer
+        {
+            get { return _playFieldContainer; }
+            set 
+            {
+                _playFieldContainer = value; 
+                Notify();
+            }
+        }
     }
 }

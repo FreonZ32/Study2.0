@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:_2048Game"
         xmlns:vm="clr-namespace:_2048Game.View_Model"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="400">
+        Title="MainWindow" Height="650" Width="500">
     <Window.DataContext>
         <vm:MainWindowViewModel></vm:MainWindowViewModel>
     </Window.DataContext>
@@ -341,16 +341,9 @@
                 </StackPanel>
             </Border>
         </Grid>
-        <Grid x:Name="MainPlayField" Grid.Row="2" Margin="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Border>
-                <Label></Label>
-            </Border>
-        </Grid>
-        
+        <ItemsPresenter ></ItemsPresenter>
+        <Border Grid.Row="2" Background="#FFBBADA0" Margin="4" CornerRadius="10">
+            <ItemsControl ItemsSource="{Binding PlayFieldContainer}"></ItemsControl>
+        </Border>
     </Grid>
 </Window>

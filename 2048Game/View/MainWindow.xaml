@@ -6,7 +6,13 @@
         xmlns:local="clr-namespace:_2048Game"
         xmlns:vm="clr-namespace:_2048Game.View_Model"
         mc:Ignorable="d"
-        Title="MainWindow" Height="650" Width="500">
+        Title="MainWindow" Height="650" Width="500" >
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding WinBtnPress}" Key="W" CommandParameter="BtnUP"></KeyBinding>
+        <KeyBinding Command="{Binding WinBtnPress}" Key="S" CommandParameter="BtnDOWN"></KeyBinding>
+        <KeyBinding Command="{Binding WinBtnPress}" Key="A" CommandParameter="BtnLEFT"></KeyBinding>
+        <KeyBinding Command="{Binding WinBtnPress}" Key="D" CommandParameter="BtnRIGHT"></KeyBinding>
+    </Window.InputBindings>
     <Window.DataContext>
         <vm:MainWindowViewModel></vm:MainWindowViewModel>
     </Window.DataContext>
@@ -318,9 +324,9 @@
                 <Label Content="Выход" FontSize="14"></Label>
             </MenuItem>
             <MenuItem Style="{DynamicResource MenuItemMyStyle}" Header="Настройки" BorderBrush="#FFBBADA0" BorderThickness="3,3,1,1" FontSize="18" Foreground="#FF424242" Background="#FFCDC1B5">
-                <RadioButton Content="4X4" Command="{Binding ButtonClickCommand}"  CommandParameter="RBSize4" IsChecked="True" FontSize="14"></RadioButton>
-                <RadioButton Content="8X8" Command="{Binding ButtonClickCommand}" CommandParameter="RBSize8" FontSize="14"></RadioButton>
-                <RadioButton Content="16X16" Command="{Binding ButtonClickCommand}" CommandParameter="RBSize16" FontSize="14"></RadioButton>
+                <RadioButton Content="4X4" Command="{Binding RBCLickCommand}"  CommandParameter="RBSize4" IsChecked="True" FontSize="14"></RadioButton>
+                <RadioButton Content="8X8" Command="{Binding RBCLickCommand}" CommandParameter="RBSize8" FontSize="14"></RadioButton>
+                <RadioButton Content="16X16" Command="{Binding RBCLickCommand}" CommandParameter="RBSize16" FontSize="14"></RadioButton>
             </MenuItem>
         </Menu>
         <Grid Grid.Row="1">

@@ -26,21 +26,26 @@ namespace _2048Game.View_Model
 
         int _size_of_field = 4;  //размер MainPlayField (изменяется в RBSize_Click)
         string _RBIsClicked;
+        string _WBtnPress;
         ObservableCollection<Grid> _playFieldContainer;
         MainFieldGrid PlayField;
 
         public MainWindowViewModel()
         {
-            ButtonClickCommand = new ButtonClickCommand(OnClicked);
+            RBCLickCommand = new ButtonClickCommand(RBOnClick);
+            WinBtnPress = new ButtonClickCommand(WindowOnButtonPress);
             _playFieldContainer = new ObservableCollection<Grid>();
             PlayField = new MainFieldGrid(_size_of_field);
             PlayFieldContainer.Add(PlayField.FieldGrid);
         }
 
-        public ICommand? ButtonClickCommand { get;}
+        public ICommand? RBCLickCommand { get;}
+        public ICommand? WinBtnPress { get;}
         
-        private void OnClicked(string NameOfElement)
+        private void RBOnClick(string NameOfElement)
         { RBIsClicked = NameOfElement;}
+        private void WindowOnButtonPress(string NameOfButton)
+        { WBtnPress = NameOfButton; }
 
         public string RBIsClicked
         {
@@ -54,6 +59,19 @@ namespace _2048Game.View_Model
                 MessageBox.Show("Ошибка в названии радиобокса!");
                 _RBIsClicked = "RBSize4";
                 SizeOfField = 4; Notify();
+            }
+        }
+        public string WBtnPress
+        {
+            get { return _WBtnPress; }
+            set
+            {
+                _WBtnPress = value;
+                if(_WBtnPress == "BtnUP") { PlayField.MoveUp(); if(PlayField.NextStepPlateCreator() == false)MessageBox.Show("!!!!!");Notify(); return; }
+                if(_WBtnPress == "BtnDOWN") { PlayField.MoveDown(); if(PlayField.NextStepPlateCreator() == false)MessageBox.Show("!!!!!");Notify(); return; }
+                if(_WBtnPress == "BtnLEFT") { PlayField.NextStepPlateCreator();Notify(); return; }
+                if(_WBtnPress == "BtnRIGHT") { PlayField.NextStepPlateCreator();Notify(); return; }
+                _WBtnPress = "WTF";Notify();
             }
         }
         public int SizeOfField

@@ -23,8 +23,12 @@ namespace _2048Game
         
         public MainWindow()
         {
-            DataContext = new _2048Game.View_Model.MainWindowViewModel();
             InitializeComponent();
+            //DataContext = new _2048Game.View_Model.MainWindowViewModel();
+            View_Model.MainWindowViewModel vm = new View_Model.MainWindowViewModel();
+            this.DataContext = vm;
+            if (vm.CloseAction == null)
+                vm.CloseAction = new Action(this.Close);
         }
     }
 }

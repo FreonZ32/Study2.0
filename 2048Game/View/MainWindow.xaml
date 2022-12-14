@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:_2048Game"
         xmlns:vm="clr-namespace:_2048Game.View_Model"
         mc:Ignorable="d"
-        Title="MainWindow" Height="650" Width="500" >
+        Title="Game 2048" Height="650" Width="500" WindowStyle="ToolWindow" ResizeMode="NoResize" >
     <Window.InputBindings>
         <KeyBinding Command="{Binding WinBtnPress}" Key="W" CommandParameter="BtnUP"></KeyBinding>
         <KeyBinding Command="{Binding WinBtnPress}" Key="S" CommandParameter="BtnDOWN"></KeyBinding>
@@ -320,8 +320,16 @@
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" VerticalAlignment="Top"  Background="{x:Null}" HorizontalAlignment="Center">
             <MenuItem Style="{DynamicResource MenuItemMyStyle}" Header="Игра" BorderBrush="#FFBBADA0" BorderThickness="3,3,1,1" FontSize="18" Foreground="#FF424242" Background="#FFCDC1B5">
-                <Label Content="Новая игра" FontSize="14"></Label>
-                <Label Content="Выход" FontSize="14"></Label>
+                <Label Content="Новая игра" FontSize="14">
+                    <Label.InputBindings>
+                        <MouseBinding MouseAction="LeftClick" Command="{Binding NewGame}"></MouseBinding>
+                    </Label.InputBindings>
+                </Label>
+                <Label Content="Выход" FontSize="14">
+                    <Label.InputBindings>
+                        <MouseBinding MouseAction="LeftClick" Command="{Binding Exit}"></MouseBinding>
+                    </Label.InputBindings>
+                </Label>
             </MenuItem>
             <MenuItem Style="{DynamicResource MenuItemMyStyle}" Header="Настройки" BorderBrush="#FFBBADA0" BorderThickness="3,3,1,1" FontSize="18" Foreground="#FF424242" Background="#FFCDC1B5">
                 <RadioButton Content="4X4" Command="{Binding RBCLickCommand}"  CommandParameter="RBSize4" IsChecked="True" FontSize="14"></RadioButton>
@@ -337,13 +345,13 @@
             <Border Grid.Column="0" Background="#FFBBADA0" Margin="10,10,5,5" CornerRadius="10" VerticalAlignment="Center">
                 <StackPanel  Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" >
                     <Label Content="Score" FontWeight="Bold" FontSize="14" Foreground="#FFEEE2D6" HorizontalAlignment="Center"/>
-                    <Label x:Name="LBScore" Content="0" HorizontalAlignment="Center" FontWeight="Bold" FontSize="14" Foreground="#FFFCFEFF"  />
+                    <Label Content="{Binding Score, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" FontWeight="Bold" FontSize="14" Foreground="#FFFCFEFF"  />
                 </StackPanel>
             </Border>
             <Border Grid.Column="1" Background="#FFBBADA0" Margin="5,10,10,5" CornerRadius="10" VerticalAlignment="Center">
                 <StackPanel  Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" >
                     <Label Content="High Score" FontWeight="Bold" FontSize="14" Foreground="#FFEEE2D6" HorizontalAlignment="Center"/>
-                    <Label x:Name="LBHighScore" Content="0" HorizontalAlignment="Center" FontWeight="Bold" FontSize="14" Foreground="#FFFCFEFF"  />
+                    <Label Content="{Binding MaxScore, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" FontWeight="Bold" FontSize="14" Foreground="#FFFCFEFF"  />
                 </StackPanel>
             </Border>
         </Grid>

@@ -69,7 +69,7 @@ namespace _2048Game.Model
                 {
                     borderList.Add(new Border());
                     borderList[j].Margin = new System.Windows.Thickness(3);
-                    borderList[j].Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0xEE, 0xE2, 0xD6));
+                    borderList[j].Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0xCD, 0xC1, 0xB5));
                     borderList[j].CornerRadius = new System.Windows.CornerRadius(4);
                     borderList[j].Height = (455 - (3 * SizeofField * 2)) / SizeofField;
 
@@ -120,7 +120,7 @@ namespace _2048Game.Model
                     for (int k = j+1; k < SizeofField; k++)
                     {
                         if (PlateLabel[k][i].Content.ToString() == ContentOfEmptyPlate) continue;
-                        if (PlateLabel[j][i].Content == PlateLabel[k][i].Content)
+                        if (Convert.ToInt32(PlateLabel[j][i].Content) == Convert.ToInt32(PlateLabel[k][i].Content))
                         {
                             PlateLabel[j][i].Content = (Convert.ToInt32(PlateLabel[j][i].Content) * 2).ToString();
                             PlateLabel[k][i].Content = ContentOfEmptyPlate;
@@ -150,7 +150,7 @@ namespace _2048Game.Model
                     for (int k = j + 1; k < SizeofField; k++)
                     {
                         if (PlateLabel[i][k].Content.ToString() == ContentOfEmptyPlate) continue;
-                        if (PlateLabel[i][j].Content == PlateLabel[i][k].Content)
+                        if (Convert.ToInt32(PlateLabel[i][j].Content) == Convert.ToInt32(PlateLabel[i][k].Content))
                         {
                             PlateLabel[i][j].Content = (Convert.ToInt32(PlateLabel[i][j].Content) * 2).ToString();
                             PlateLabel[i][k].Content = ContentOfEmptyPlate;
@@ -199,6 +199,37 @@ namespace _2048Game.Model
                 MoveVertical();
                 ReversAllList();
             }
+        }
+        public int MaxNumber()
+        {
+            int max = 0;
+            for (int i = 0; i < SizeofField; i++)
+                for (int j = 0; j < SizeofField; j++)
+                {
+                    if (PlateLabel[i][j].Content.ToString() != ContentOfEmptyPlate)
+                        if (max < Convert.ToInt32(PlateLabel[i][j].Content)) max = Convert.ToInt32(PlateLabel[i][j].Content);
+                }
+            return max;
+        }
+        public void BrushForColor()
+        {
+            for (int i = 0; i < SizeofField; i++)
+                for (int j = 0; j < SizeofField; j++)
+                {
+                    if(PlateLabel[i][j].Content.ToString() == ContentOfEmptyPlate) PlateBorder[i][j].Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0xCD, 0xC1, 0xB5));
+                    else 
+                        switch(Convert.ToInt32(PlateLabel[i][j].Content))
+                        {
+                            case 2: PlateBorder[i][j].Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0xEE, 0xE4, 0xDA));break;
+                            case 4: PlateBorder[i][j].Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0xEC, 0xE0, 0xCA)); break;
+                            case 8: PlateBorder[i][j].Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0xF2, 0xB1, 0x79)); break;
+                            case 16: PlateBorder[i][j].Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0xEC, 0x8D, 0x53)); break;
+                            case 32: PlateBorder[i][j].Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0xED, 0x69, 0x3D)); break;
+                            case 64: PlateBorder[i][j].Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0xED, 0x45, 0x45)); break;
+                            case 128: PlateBorder[i][j].Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0xFF, 0x0B, 0x0B)); break;
+                            default: PlateBorder[i][j].Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0xFF, 0x0B, 0x0B)); break;
+                        }
+                }
         }
     }
     

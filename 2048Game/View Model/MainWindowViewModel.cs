@@ -13,6 +13,9 @@ using System.Drawing;
 using _2048Game.Model;
 using System.Security.Policy;
 using System.Windows.Media;
+using System.IO;
+using System.Security.Cryptography;
+using System.Reflection.Metadata;
 
 namespace _2048Game.View_Model
 {
@@ -27,8 +30,11 @@ namespace _2048Game.View_Model
         int _size_of_field = 4;  //размер MainPlayField (изменяется в RBSize_Click)
         string _RBIsClicked;
         string _WBtnPress;
+        int _score;
+        int _maxScore;
         ObservableCollection<Grid> _playFieldContainer;
         MainFieldGrid PlayField;
+        StreamReader streamsreader;
 
         public MainWindowViewModel()
         {
@@ -37,13 +43,41 @@ namespace _2048Game.View_Model
             _playFieldContainer = new ObservableCollection<Grid>();
             PlayField = new MainFieldGrid(_size_of_field);
             PlayFieldContainer.Add(PlayField.FieldGrid);
+            SettingsReader();
         }
 
+        public Action CloseAction { get; set; }
         public ICommand? RBCLickCommand { get;}
         public ICommand? WinBtnPress { get;}
-        
+
+        public ICommand Exit
+        {
+            get
+            {
+                return new ButtonCommands((obj) =>
+                {
+                    CloseAction();
+                });
+            }
+        }
+        public ICommand NewGame
+        {
+            get
+            {
+                return new ButtonCommands((obj) =>
+                {
+                    SizeOfField = 4;
+                    PlayField = new MainFieldGrid(_size_of_field);
+                    PlayFieldContainer.Clear();
+                    PlayFieldContainer.Add(PlayField.FieldGrid);
+                    SettingsReader();
+                });
+            }
+        }
+
+
         private void RBOnClick(string NameOfElement)
-        { RBIsClicked = NameOfElement;}
+        { RBIsClicked = NameOfElement; SettingsWriter(); }
         private void WindowOnButtonPress(string NameOfButton)
         { WBtnPress = NameOfButton; }
 
@@ -53,12 +87,16 @@ namespace _2048Game.View_Model
             set 
             { 
                 _RBIsClicked = value;
-                if (_RBIsClicked == "RBSize4") { SizeOfField = 4; Notify(); return; }
-                if (_RBIsClicked == "RBSize8") { SizeOfField = 8; Notify(); return; }
-                if (_RBIsClicked == "RBSize16") { SizeOfField = 16; Notify(); return; }
-                MessageBox.Show("Ошибка в названии радиобокса!");
-                _RBIsClicked = "RBSize4";
-                SizeOfField = 4; Notify();
+                if (_RBIsClicked == "RBSize4") { SizeOfField = 4;Score = 0; Notify(); }
+                else if (_RBIsClicked == "RBSize8") { SizeOfField = 8; Score = 0; Notify(); }
+                else if (_RBIsClicked == "RBSize16") { SizeOfField = 16; Score = 0; Notify(); }
+                else
+                {
+                    MessageBox.Show("Ошибка в названии радиобокса!");
+                    _RBIsClicked = "RBSize4";
+                    SizeOfField = 4;
+                    Score = 0; Notify();
+                }
             }
         }
         public string WBtnPress
@@ -68,10 +106,20 @@ namespace _2048Game.View_Model
             {
                 _WBtnPress = value;
                 if (_WBtnPress == "BtnUP") PlayField.MoveToDir("Up");
-                if (_WBtnPress == "BtnDOWN")PlayField.MoveToDir("Down");
-                if (_WBtnPress == "BtnLEFT")PlayField.MoveToDir("Left");
-                if (_WBtnPress == "BtnRIGHT")PlayField.MoveToDir("Right");
-                if (PlayField.NextStepPlateCreator() == false) MessageBox.Show("!!!!!"); Notify();
+                if (_WBtnPress == "BtnDOWN") PlayField.MoveToDir("Down");
+                if (_WBtnPress == "BtnLEFT") PlayField.MoveToDir("Left");
+                if (_WBtnPress == "BtnRIGHT") PlayField.MoveToDir("Right");
+                if (PlayField.NextStepPlateCreator() == false) 
+                {
+                    MessageBox.Show("Вы проиграли!");
+                    if (NewGame?.CanExecute(SizeOfField) == true)
+                        NewGame.Execute(SizeOfField);
+                }
+                Score = PlayField.MaxNumber();
+                if (Score == 2048) MessageBox.Show("Вы выиграли!");
+                PlayField.BrushForColor();
+                if (Score > MaxScore) { MaxScore = Score; SettingsWriter(); }
+                Notify();
             }
         }
         public int SizeOfField
@@ -96,6 +144,57 @@ namespace _2048Game.View_Model
                 _playFieldContainer = value; 
                 Notify();
             }
+        }
+        public int Score
+        {
+            get { return _score; }
+            set
+            {
+                _score = value;
+                Notify();
+            }
+        }
+        public int MaxScore
+        {
+            get { return _maxScore; }
+            set 
+            { 
+                _maxScore = value;
+                Notify(); 
+            }
+        }
+        public void SettingsReader()
+        {
+            string exePath = AppDomain.CurrentDomain.BaseDirectory;
+            string path = "";
+            path = System.IO.Path.Combine(exePath, "Settings\\Sett.txt");
+            streamsreader = new StreamReader(path);
+            String line;
+            try
+            {
+                line = streamsreader.ReadLine();
+                RBIsClicked = line;
+                line = streamsreader.ReadLine();
+                MaxScore = Convert.ToInt32(line);
+                streamsreader.Close();
+            }
+            catch(Exception ex)
+            {
+                streamsreader.Close();
+                MessageBox.Show("Сбой файла настройки" + ex);
+                MaxScore = 0;
+            }
+        }
+        public void SettingsWriter()
+        {
+            string exePath = AppDomain.CurrentDomain.BaseDirectory;
+            string path = "";
+            path = System.IO.Path.Combine(exePath,"Settings\\Sett.txt");
+            File.WriteAllText(path, "");
+            StreamWriter streamswriter = new StreamWriter(path,true);
+            streamswriter.WriteLine(_RBIsClicked);
+            streamswriter.WriteLine(_maxScore);
+            streamswriter.Close();
         }
     }
 }

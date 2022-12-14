@@ -112,6 +112,14 @@ namespace _2048Game.Model
         }
         public void MoveUp (bool Up = true)
         {
+            int plus1 = 1;
+            int SOF = SizeofField;
+            int zero = 0;
+            if (Up==false)
+            {
+                plus1 = -1;
+
+            }
             for (int i = 0; i < SizeofField; i++)
             {
                 for (int j = 0; j < SizeofField; j++)
@@ -128,12 +136,12 @@ namespace _2048Game.Model
                         }
                         break;
                     }
-                    for (int k = j - 1; k >= 0; k--)
+                    for (int k = j-1; k >= 0; k--)
                     {
                         if (PlateLabel[k][i].Content.ToString() == ContentOfEmptyPlate)
                         {
-                            PlateLabel[k][i].Content = PlateLabel[j][i].Content;
-                            PlateLabel[j][i].Content = ContentOfEmptyPlate;
+                            PlateLabel[k][i].Content = PlateLabel[k+1][i].Content;
+                            PlateLabel[k+1][i].Content = ContentOfEmptyPlate;
                         }
                         else break;
                     }

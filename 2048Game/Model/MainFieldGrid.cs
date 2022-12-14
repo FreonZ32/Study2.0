@@ -110,16 +110,8 @@ namespace _2048Game.Model
                 PlateLabel[availableTiles[winner].Item1][availableTiles[winner].Item2].Content = "2";return true;
             }
         }
-        public void MoveUp (bool Up = true)
+        public void MoveHorisontal()
         {
-            int plus1 = 1;
-            int SOF = SizeofField;
-            int zero = 0;
-            if (Up==false)
-            {
-                plus1 = -1;
-
-            }
             for (int i = 0; i < SizeofField; i++)
             {
                 for (int j = 0; j < SizeofField; j++)
@@ -148,34 +140,66 @@ namespace _2048Game.Model
                 }
             }
         }
-        public void MoveDown()
+        public void MoveVertical()
         {
-            //for (int i = 0; i < SizeofField; i++)
-            //{
-            //    for (int j = SizeofField - 1; j > 0; j--)
-            //    {
-            //        if (PlateLabel[i + j * 4].Content == "0") continue;
-            //        for (int k = j-1 ; k>=0 ; k--)
-            //        {
-            //            if(PlateLabel[i + k * 4].Content == "0") continue;
-            //            if(PlateLabel[i + k * 4].Content == PlateLabel[i + j * 4].Content)
-            //            {
-            //                PlateLabel[i + j * 4].Content = (Convert.ToInt32(PlateLabel[i + j * 4].Content) * 2).ToString();
-            //                PlateLabel[i + k * 4].Content = "0";
-            //                break;
-            //            }
-            //        }
-            //        for (int l = j; l < SizeofField-1; l++)
-            //        {
-            //            if (PlateLabel[i + (l + 1) * 4].Content == "0")
-            //            {
-            //                PlateLabel[i + (l + 1) * 4].Content = PlateLabel[i + l * 4].Content;
-            //                PlateLabel[i + l * 4].Content = "0";
-            //            }
-            //            else break;
-            //        }
-            //    }
-            //}
+            for (int i = 0; i < SizeofField; i++)
+            {
+                for (int j = 0; j < SizeofField; j++)
+                {
+                    if (PlateLabel[i][j].Content.ToString() == ContentOfEmptyPlate) continue;
+                    for (int k = j + 1; k < SizeofField; k++)
+                    {
+                        if (PlateLabel[i][k].Content.ToString() == ContentOfEmptyPlate) continue;
+                        if (PlateLabel[i][j].Content == PlateLabel[i][k].Content)
+                        {
+                            PlateLabel[i][j].Content = (Convert.ToInt32(PlateLabel[i][j].Content) * 2).ToString();
+                            PlateLabel[i][k].Content = ContentOfEmptyPlate;
+                            break;
+                        }
+                        break;
+                    }
+                    for (int k = j - 1; k >= 0; k--)
+                    {
+                        if (PlateLabel[i][k].Content.ToString() == ContentOfEmptyPlate)
+                        {
+                            PlateLabel[i][k].Content = PlateLabel[i][k+1].Content;
+                            PlateLabel[i][k+1].Content = ContentOfEmptyPlate;
+                        }
+                        else break;
+                    }
+                }
+            }
+        }
+        public void ReversAllList()
+        {
+            for (int i = 0; i < SizeofField; i++)
+            {
+                PlateLabel[i].Reverse();
+            }
+        }
+        public void MoveToDir(string dir)
+        {
+            if(dir == "Down")
+            {
+                PlateLabel.Reverse();
+                MoveHorisontal();
+                PlateLabel.Reverse();
+            }
+            if(dir == "Up")
+            {
+                MoveHorisontal();
+            }
+            if(dir == "Left")
+            {
+                MoveVertical();
+            }
+            if(dir == "Right")
+            {
+                ReversAllList();
+                MoveVertical();
+                ReversAllList();
+            }
         }
     }
+    
 }

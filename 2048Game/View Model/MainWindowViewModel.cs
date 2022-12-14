@@ -67,11 +67,11 @@ namespace _2048Game.View_Model
             set
             {
                 _WBtnPress = value;
-                if (_WBtnPress == "BtnUP") { PlayField.MoveUp(); if (PlayField.NextStepPlateCreator() == false) MessageBox.Show("!!!!!"); Notify(); return; }
-                if (_WBtnPress == "BtnDOWN") { if (PlayField.NextStepPlateCreator() == false) MessageBox.Show("!!!!!"); Notify(); return; }
-                if (_WBtnPress == "BtnLEFT") { PlayField.NextStepPlateCreator(); Notify(); return; }
-                if (_WBtnPress == "BtnRIGHT") { PlayField.NextStepPlateCreator(); Notify(); return; }
-                _WBtnPress = "WTF"; Notify();
+                if (_WBtnPress == "BtnUP") PlayField.MoveToDir("Up");
+                if (_WBtnPress == "BtnDOWN")PlayField.MoveToDir("Down");
+                if (_WBtnPress == "BtnLEFT")PlayField.MoveToDir("Left");
+                if (_WBtnPress == "BtnRIGHT")PlayField.MoveToDir("Right");
+                if (PlayField.NextStepPlateCreator() == false) MessageBox.Show("!!!!!"); Notify();
             }
         }
         public int SizeOfField

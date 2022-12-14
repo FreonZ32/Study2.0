@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -22,10 +25,11 @@ namespace _2048Game.Model
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        int SizeofField { get; set; }
+        string ContentOfEmptyPlate = "";    //just for debug
+        int SizeofField { get; set; }   //Постоянно размер поля (равный по ширине/высоте)
         public Grid FieldGrid { get; set; }
-        public ObservableCollection<Border> PlateBorder { get; set; }
-        public ObservableCollection<Label> PlateLabel { get; set; }
+        public List<List<Border>> PlateBorder { get; set; } //Плитки
+        public List<List<Label>> PlateLabel { get; set; }   //Контент плиток (цифры)
         List<ColumnDefinition> FieldGrid_Columns { get; set; }
         List<RowDefinition> FieldGrid_Rows { get; set; }
 
@@ -33,22 +37,22 @@ namespace _2048Game.Model
         {
             SizeofField = size;
             FieldGrid = new Grid();
-            PlateBorder = new ObservableCollection<Border>();
-            PlateLabel = new ObservableCollection<Label>();
+            PlateBorder = new List<List<Border>>();
+            PlateLabel = new List<List<Label>>();
             FieldGrid_Columns = new List<ColumnDefinition>();
             FieldGrid_Rows = new List<RowDefinition>();
-            ChangeFieldSize(SizeofField);
+            ChangeFieldSize();
         }
 
 
-        public void ChangeFieldSize(int size)
+        public void ChangeFieldSize()
         {
             PlateBorder.Clear();
             PlateLabel.Clear();
             FieldGrid_Columns.Clear();
             FieldGrid_Rows.Clear();
             FieldGrid = new Grid();
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < SizeofField; i++)
             {
                 FieldGrid_Columns.Add(new ColumnDefinition());
                 FieldGrid_Columns[i].Width = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
@@ -57,42 +61,53 @@ namespace _2048Game.Model
                 FieldGrid_Rows[i].Height = new System.Windows.GridLength(1, System.Windows.GridUnitType.Star);
                 FieldGrid.RowDefinitions.Add(FieldGrid_Rows[i]);
             }
-            for (int i = 0; i < size * size; i++)
+            for (int i = 0; i < SizeofField; i++)
             {
-                PlateBorder.Add(new System.Windows.Controls.Border());
-                PlateBorder[i].Margin = new System.Windows.Thickness(3);
-                PlateBorder[i].Background = new SolidColorBrush(Color.FromArgb(0xFF, 0xEE, 0xE2, 0xD6));
-                PlateBorder[i].CornerRadius = new System.Windows.CornerRadius(4);
-                PlateBorder[i].Height = (455 - (3 * size * 2)) / size;
-                PlateLabel.Add(new System.Windows.Controls.Label());
-                PlateLabel[i].Content = "0";
-                PlateLabel[i].HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-                PlateLabel[i].VerticalAlignment = System.Windows.VerticalAlignment.Center;
-                PlateLabel[i].FontSize = 24-size;
-                PlateBorder[i].Child = PlateLabel[i];
-                FieldGrid.Children.Add(PlateBorder[i]);
-                Grid.SetColumn(PlateBorder[i], i % size);
-                Grid.SetRow(PlateBorder[i], i / size);
+                List<Border> borderList = new List<Border>();
+                List<Label> labelList = new List<Label>();
+                for (int j = 0; j < SizeofField; j++)
+                {
+                    borderList.Add(new Border());
+                    borderList[j].Margin = new System.Windows.Thickness(3);
+                    borderList[j].Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0xFF, 0xEE, 0xE2, 0xD6));
+                    borderList[j].CornerRadius = new System.Windows.CornerRadius(4);
+                    borderList[j].Height = (455 - (3 * SizeofField * 2)) / SizeofField;
+
+                    labelList.Add(new Label());
+                    labelList[j].Content = ContentOfEmptyPlate;
+                    labelList[j].HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                    labelList[j].VerticalAlignment = System.Windows.VerticalAlignment.Center;
+                    labelList[j].FontSize = 24 - SizeofField;
+
+                    borderList[j].Child = labelList[j];
+                    FieldGrid.Children.Add(borderList[j]);
+                    Grid.SetColumn(borderList[j], j);
+                    Grid.SetRow(borderList[j], i);
+                }
+                PlateBorder.Add(borderList);
+                PlateLabel.Add(labelList);
             }
         }
         public bool NextStepPlateCreator()
         {
             Random random = new Random();
-            List<int> availableTiles = new List<int>();
+            List<(int,int)> availableTiles = new List<(int,int)>(); //Список всех достумных плиток
             for (int i = 0; i < PlateLabel.Count; i++)
-            { if (PlateLabel[i].Content == "0") availableTiles.Add(i); }
-            if (availableTiles.Count == 0)return false;
-            int twoOrfour = random.Next(0, 100);
-            int winner = availableTiles[random.Next(0, availableTiles.Count)];
-            if (twoOrfour<10)
+            {
+                for (int j = 0; j < PlateLabel[i].Count; j++)
+                { if (PlateLabel[i][j].Content.ToString() == ContentOfEmptyPlate) availableTiles.Add((i,j));}
+            }
+            if(availableTiles.Count == 0)return false;  //Если доступных нет, функция вернет false
+
+            int winner = random.Next(0, availableTiles.Count);  // Выбор рандомной доступной плитки
+            int twoOfFour = random.Next(0,100);
+            if (twoOfFour < 10)
             {//10% появление плитки 4
-                PlateLabel[winner].Content = "4";
-                return true;
+                PlateLabel[availableTiles[winner].Item1][availableTiles[winner].Item2].Content = "4";return true;
             }
             else
             {//90% появление плитки 2
-                PlateLabel[winner].Content = "2";
-                return true;
+                PlateLabel[availableTiles[winner].Item1][availableTiles[winner].Item2].Content = "2";return true;
             }
         }
         public void MoveUp (bool Up = true)
@@ -101,23 +116,24 @@ namespace _2048Game.Model
             {
                 for (int j = 0; j < SizeofField; j++)
                 {
-                    if (PlateLabel[i + j * 4].Content == "0") continue;
-                    for (int k = j + 1; i + k * 4 < SizeofField*SizeofField;k++)
+                    if (PlateLabel[j][i].Content.ToString() == ContentOfEmptyPlate) continue;
+                    for (int k = j+1; k < SizeofField; k++)
                     {
-                        if (PlateLabel[i + k * 4].Content == "0") continue;
-                        if (PlateLabel[i + j * 4].Content == PlateLabel[i + k * 4].Content)
+                        if (PlateLabel[k][i].Content.ToString() == ContentOfEmptyPlate) continue;
+                        if (PlateLabel[j][i].Content == PlateLabel[k][i].Content)
                         {
-                            PlateLabel[i + j * 4].Content = (Convert.ToInt32(PlateLabel[i + j * 4].Content) * 2).ToString();
-                            PlateLabel[i + k * 4].Content = "0";
+                            PlateLabel[j][i].Content = (Convert.ToInt32(PlateLabel[j][i].Content) * 2).ToString();
+                            PlateLabel[k][i].Content = ContentOfEmptyPlate;
                             break;
                         }
+                        break;
                     }
-                    for(int l = j; l>0; l--)
+                    for (int k = j - 1; k >= 0; k--)
                     {
-                        if (PlateLabel[i + (l - 1) * 4].Content == "0")
+                        if (PlateLabel[k][i].Content.ToString() == ContentOfEmptyPlate)
                         {
-                            PlateLabel[i + (l - 1) * 4].Content = PlateLabel[i + l * 4].Content;
-                            PlateLabel[i + l * 4].Content = "0";
+                            PlateLabel[k][i].Content = PlateLabel[j][i].Content;
+                            PlateLabel[j][i].Content = ContentOfEmptyPlate;
                         }
                         else break;
                     }
@@ -126,32 +142,32 @@ namespace _2048Game.Model
         }
         public void MoveDown()
         {
-            for (int i = 0; i < SizeofField; i++)
-            {
-                for (int j = SizeofField - 1; j > 0; j--)
-                {
-                    if (PlateLabel[i + j * 4].Content == "0") continue;
-                    for (int k = j-1 ; k>=0 ; k--)
-                    {
-                        if(PlateLabel[i + k * 4].Content == "0") continue;
-                        if(PlateLabel[i + k * 4].Content == PlateLabel[i + j * 4].Content)
-                        {
-                            PlateLabel[i + j * 4].Content = (Convert.ToInt32(PlateLabel[i + j * 4].Content) * 2).ToString();
-                            PlateLabel[i + k * 4].Content = "0";
-                            break;
-                        }
-                    }
-                    for (int l = j; l < SizeofField-1; l++)
-                    {
-                        if (PlateLabel[i + (l + 1) * 4].Content == "0")
-                        {
-                            PlateLabel[i + (l + 1) * 4].Content = PlateLabel[i + l * 4].Content;
-                            PlateLabel[i + l * 4].Content = "0";
-                        }
-                        else break;
-                    }
-                }
-            }
+            //for (int i = 0; i < SizeofField; i++)
+            //{
+            //    for (int j = SizeofField - 1; j > 0; j--)
+            //    {
+            //        if (PlateLabel[i + j * 4].Content == "0") continue;
+            //        for (int k = j-1 ; k>=0 ; k--)
+            //        {
+            //            if(PlateLabel[i + k * 4].Content == "0") continue;
+            //            if(PlateLabel[i + k * 4].Content == PlateLabel[i + j * 4].Content)
+            //            {
+            //                PlateLabel[i + j * 4].Content = (Convert.ToInt32(PlateLabel[i + j * 4].Content) * 2).ToString();
+            //                PlateLabel[i + k * 4].Content = "0";
+            //                break;
+            //            }
+            //        }
+            //        for (int l = j; l < SizeofField-1; l++)
+            //        {
+            //            if (PlateLabel[i + (l + 1) * 4].Content == "0")
+            //            {
+            //                PlateLabel[i + (l + 1) * 4].Content = PlateLabel[i + l * 4].Content;
+            //                PlateLabel[i + l * 4].Content = "0";
+            //            }
+            //            else break;
+            //        }
+            //    }
+            //}
         }
     }
 }
